@@ -14,7 +14,7 @@ public class ServerGui extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;	
 	private JFrame frame;	
-	private static TrayIcon trayIcon;
+	private TrayIcon trayIcon;
 	private JLabel osName, internalIp, externalIp, macAddress, port;
 	
 	static private JLabel status, error;
@@ -39,7 +39,7 @@ public class ServerGui extends JFrame {
 		});
 	  }
 	
-	private static void serverExit() {
+	private void serverExit() {
 		
 		System.out.println("Server Quitting");
 		
@@ -117,7 +117,7 @@ public class ServerGui extends JFrame {
         exitItem.addActionListener(listener);       
 	}
 	
-	protected static Image createImage(String fileName, String description) {
+	protected Image createImage(String fileName, String description) {
 	    URL imageURL = ServerGui.class.getResource("/resources/" + fileName);
 	     
 	    if (imageURL == null) {
@@ -147,7 +147,7 @@ public class ServerGui extends JFrame {
 		});	
 	}	
 	
-	public static void clientConnected() {
+	public void clientConnected() {
 
 		trayIcon.displayMessage("Client Connected",
                 "",TrayIcon.MessageType.INFO);
@@ -155,7 +155,7 @@ public class ServerGui extends JFrame {
 		ServerGui.popUpCon  = true;
 	}
 	
-	public static void clientDisconnected() {
+	public void clientDisconnected() {
 
 		trayIcon.displayMessage("Client Disconnected",
                 "", TrayIcon.MessageType.INFO);
@@ -163,30 +163,23 @@ public class ServerGui extends JFrame {
 		ServerGui.popUpCon = false;		
 	}
 	
-	private static boolean popUpConnectShown() {
+	private boolean popUpConnectShown() {
 		
 		return ServerGui.popUpCon;
 	}
 	
-	protected static boolean popUpDisConnectShown() {
+	protected boolean popUpDisConnectShown() {
 		return ServerGui.popUpDis;
 	}
-	
-	
-	public static void main(String args[]) {
-		
-		new ServerGui();
 
-		new ServerThread();
-	
-		new UpdateGuiThread();
-	}
-	
-	private static class ServerThread implements Runnable {
+    public void startServer() {
+        new ServerThread();
+    }
+
+    private class ServerThread implements Runnable {
 
 		ServerThread() {
-			
-			new Thread(this).start();			
+			new Thread(this).start();
 		}
 		
 		@Override
@@ -199,12 +192,14 @@ public class ServerGui extends JFrame {
 		}		
 	}
 
-	
-	private static class UpdateGuiThread implements Runnable {
+	public void startGuiUpdates() {
+        new UpdateGuiThread();
+    }
+
+	private class UpdateGuiThread implements Runnable {
 
 		UpdateGuiThread() {
-			
-			new Thread(this).start();			
+			new Thread(this).start();
 		}
 		
 		@Override
@@ -222,11 +217,11 @@ public class ServerGui extends JFrame {
 				error.setText(server.getError());
 				
 				if (Server.getClientConnected() && !popUpConnectShown()) {		
-					ServerGui.clientConnected();
+					clientConnected();
 				}
 				
 				if (!Server.getClientConnected() && popUpConnectShown()) {		
-					ServerGui.clientDisconnected();					
+					clientDisconnected();
 				}				
 			}
 			
