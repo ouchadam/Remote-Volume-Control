@@ -1,0 +1,28 @@
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+out/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+.project
+.classpath
+.settings
+target/
+libs/
+classes/
+
+# IDEA Ignores
+*.iml
+*.ipr
+*.iws
+.idea/
+local.properties
+project.properties
+
+# MAC
+*.DS_Store

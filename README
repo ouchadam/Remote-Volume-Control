@@ -1,0 +1,10 @@
+Git test -
+
+Simple Java Server for controlling windows (eventually osx and linux) audio device volume.
+
+Server calls a wrapper I made for Ray M.'s CoreAudioApi which provides some super simple 
+get/set default audio device volume apis. 
+
+(http://www.codeproject.com/Articles/18520/Vista-Core-Audio-API-Master-Volume-Control)
+
+I apologise for my poor code, I'm still learning...
