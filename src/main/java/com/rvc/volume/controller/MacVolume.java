@@ -1,8 +1,10 @@
-package com.rvc.volume;
+package com.rvc.volume.controller;
+
+import com.rvc.volume.VolumeController;
 
 import java.io.IOException;
 
-public class MacVolume implements VolumeController {
+class MacVolume implements VolumeController {
 
     @Override
     public int getVolume() {

@@ -3,7 +3,7 @@ package com.rvc.util;
 import java.io.*;
 import java.util.Calendar;
 
-public class ExeptionLogger {
+public class ExceptionLogger {
 
     public static void saveException(Exception e) {
         StringWriter sw = new StringWriter();

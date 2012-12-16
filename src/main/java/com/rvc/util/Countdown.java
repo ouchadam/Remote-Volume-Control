@@ -33,8 +33,7 @@ public class Countdown implements Runnable {
             }
 
         } catch (InterruptedException e) {
-            //e.printStackTrace();
-//            setError("Error : Timeout IE");
+            e.printStackTrace();
         }
     }
 }

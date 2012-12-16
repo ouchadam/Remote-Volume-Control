@@ -5,7 +5,7 @@ import java.io.IOException;
 public class Shutdown {
 
     public void shutDown() {
-        if (System.getProperty("os.name").equalsIgnoreCase("Windows 7")) {
+        if (OSHelper.isWindows7()) {
             shutdownWindows();
         } else {
             shutdownLinux();

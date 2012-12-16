@@ -1,6 +1,6 @@
 package com.rvc.server;
 
-import com.rvc.util.ExeptionLogger;
+import com.rvc.util.ExceptionLogger;
 
 import java.io.BufferedReader;
 
@@ -35,7 +35,7 @@ class SocketReader implements Runnable {
                         receiverCallback.onReceiveMessage(message);
                     }
                 } catch (Exception e) {
-                    ExeptionLogger.saveException(e);
+                    ExceptionLogger.saveException(e);
                     connectionState.setServerRunning(false);
                 }
             }

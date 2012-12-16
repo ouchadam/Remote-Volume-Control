@@ -1,10 +1,8 @@
 package com.rvc.server;
 
 import com.rvc.util.Shutdown;
-import com.rvc.volume.LinuxVolume;
-import com.rvc.volume.MacVolume;
 import com.rvc.volume.VolumeController;
-import com.rvc.volume.WinVolume;
+import com.rvc.volume.controller.VolumeControllerFactory;
 
 class Protocol {
 
@@ -24,18 +22,8 @@ class Protocol {
         this.server = server;
         exitCode = "0";
 		this.vol = "00";
-        volumeController = getVolumeController();
+        volumeController = VolumeControllerFactory.getVolumeController();
 	}
-
-    private VolumeController getVolumeController() {
-        if (System.getProperty("os.name").contains("Windows")) {
-            return new WinVolume();
-        } else if (System.getProperty("os.name").contains("MAC")) {
-            return new MacVolume();
-        } else {
-            return new LinuxVolume();
-        }
-    }
 
     public String processInput(String input) {
         if (input.equals(CONNECTED)) {

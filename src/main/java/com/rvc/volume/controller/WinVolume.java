@@ -1,11 +1,13 @@
-package com.rvc.volume;
+package com.rvc.volume.controller;
+
+import com.rvc.volume.VolumeController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class WinVolume implements VolumeController {
+class WinVolume implements VolumeController {
 
     private static final int DEFAULT_VOLUME = 50;
     private static final int COMMAND = 3;
