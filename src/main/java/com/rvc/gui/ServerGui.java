@@ -1,4 +1,8 @@
-package com.rvc;
+package com.rvc.gui;
+
+import com.rvc.server.ServerCallbacks;
+import com.rvc.ServerSettings;
+import com.rvc.server.Server;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,28 +12,22 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 
-public class ServerGui extends JFrame {
+public class ServerGui extends JFrame implements ServerCallbacks {
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;	
-	private JFrame frame;	
-	private TrayIcon trayIcon;
-	private JLabel osName, internalIp, externalIp, macAddress, port;
-	
-	static private JLabel status, error;
-		
-	private static Server server = null;
-	private static boolean popUpCon = false;
-	private static boolean popUpDis = false;
+	private static final long serialVersionUID = 1L;
+    private final JLabel status = new JLabel();
+    private final JLabel error = new JLabel("Error : nothing so far...");
+    private final ServerSettings serverSettings;
 
-	ServerGui() {			
-				
-		new ServerSettings();	
-		
-		popUpCon = false;
-		popUpDis = false;
-		
+    private JFrame frame;
+    private TrayIcon trayIcon;
+	private JLabel osName, internalIp, externalIp, macAddress, port;
+    private Server server;
+
+	public ServerGui(ServerSettings serverSettings) {
+        this.serverSettings = serverSettings;
 		SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();               
@@ -38,13 +36,15 @@ public class ServerGui extends JFrame {
             }
 		});
 	  }
-	
+
+    public void setServer(Server server) {
+        this.server = server;
+        server.setCallback(this);
+    }
+
 	private void serverExit() {
-		
 		System.out.println("Server Quitting");
-		
 		server.quit();
-		
 		System.exit(0);
 	}
 	
@@ -68,8 +68,6 @@ public class ServerGui extends JFrame {
 		externalIp = new JLabel("");
 		macAddress = new JLabel("");
 		port = new JLabel("");
-		status = new JLabel("");
-		error = new JLabel("Error : nothing so far...");
 		
 		frame.setBounds(100, 100, 250, 150);
 		panel.add(osName);
@@ -129,12 +127,11 @@ public class ServerGui extends JFrame {
 	}	
 	
 	private void updateGui() {		
-		
 		osName.setText("OS : " + System.getProperty("os.name"));
-		internalIp.setText("Lan Address : " + ServerSettings.getInteralIp());
-		externalIp.setText("External Address : " + ServerSettings.getExternalIp());
-		macAddress.setText("Mac Address : " + ServerSettings.getMacAddress());
-		port.setText("Port : " + String.valueOf(ServerSettings.getPort()));	
+		internalIp.setText("Lan Address : " + serverSettings.getInteralIp());
+		externalIp.setText("External Address : " + serverSettings.getExternalIp());
+		macAddress.setText("Mac Address : " + serverSettings.getMacAddress());
+		port.setText("Port : " + serverSettings.getPort());
 	}
 	
 	private void onServerExit() {
@@ -142,90 +139,32 @@ public class ServerGui extends JFrame {
 			public void windowClosing(WindowEvent e) {			
 				//dispose();   
 				//serverExit();			
-				frame.setVisible(false); // whilst close to tray is checked
+				frame.setVisible(false);
 			}
 		});	
-	}	
-	
-	public void clientConnected() {
-
-		trayIcon.displayMessage("Client Connected",
-                "",TrayIcon.MessageType.INFO);
-		
-		ServerGui.popUpCon  = true;
-	}
-	
-	public void clientDisconnected() {
-
-		trayIcon.displayMessage("Client Disconnected",
-                "", TrayIcon.MessageType.INFO);
-		
-		ServerGui.popUpCon = false;		
-	}
-	
-	private boolean popUpConnectShown() {
-		
-		return ServerGui.popUpCon;
-	}
-	
-	protected boolean popUpDisConnectShown() {
-		return ServerGui.popUpDis;
 	}
 
-    public void startServer() {
-        new ServerThread();
+    @Override
+    public void onStatusUpdate(String update) {
+        status.setText(update);
     }
 
-    private class ServerThread implements Runnable {
-
-		ServerThread() {
-			new Thread(this).start();
-		}
-		
-		@Override
-		public void run() {
-			
-			while(!Server.getQuit()) {			
-				server = new Server(ServerSettings.getPort());
-				server.startServer();							
-			}				
-		}		
-	}
-
-	public void startGuiUpdates() {
-        new UpdateGuiThread();
+    @Override
+    public void onErrorUpdate(String update) {
+        error.setText(update);
     }
 
-	private class UpdateGuiThread implements Runnable {
+    @Override
+    public void onClientConnected() {
+        showPopup("Client Connected");
+    }
 
-		UpdateGuiThread() {
-			new Thread(this).start();
-		}
-		
-		@Override
-		public void run() {
-			
-			while (!Server.getQuit()) {
-				
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-						
-				status.setText(server.getStatus());
-				error.setText(server.getError());
-				
-				if (Server.getClientConnected() && !popUpConnectShown()) {		
-					clientConnected();
-				}
-				
-				if (!Server.getClientConnected() && popUpConnectShown()) {		
-					clientDisconnected();
-				}				
-			}
-			
-		}
-		
-	}
+    @Override
+    public void onClientDisconnected() {
+        showPopup("Client Disconnected");
+    }
+
+    private void showPopup(String message) {
+        trayIcon.displayMessage(message,"", TrayIcon.MessageType.INFO);
+    }
 }

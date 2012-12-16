@@ -1,11 +1,38 @@
 package com.rvc;
 
+import com.rvc.gui.ServerGui;
+import com.rvc.server.Server;
+
 public class Main {
 
+    private Server server;
+    private ServerSettings serverSettings;
+    private ServerGui serverGui;
+
     public static void main(String args[]) {
-        ServerGui serverGui = new ServerGui();
-        serverGui.startServer();
-        serverGui.startGuiUpdates();
+        Main instance = new Main();
+
+        instance.initServer();
+        instance.initGui();
+        instance.serverLoop();
     }
+
+    private void initServer() {
+        serverSettings = new ServerSettings();
+        server = new Server(serverSettings.getPort());
+    }
+
+    private void initGui() {
+        serverGui = new ServerGui(serverSettings);
+        serverGui.setServer(server);
+    }
+
+    private void serverLoop() {
+        while (server.startServer()) {
+            initServer();
+            serverGui.setServer(server);
+        }
+    }
+
 
 }

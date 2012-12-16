@@ -12,18 +12,16 @@ import java.util.Enumeration;
 
 public class ServerSettings {
 	
-	private static String macAddress = "";
-	private static String internalIp = "";
-	private static String externalIp = "";
+	private String macAddress = "";
+	private String internalIp = "";
+	private String externalIp = "";
 	
-	ServerSettings() {
-		
+	public ServerSettings() {
 		if (getOsName().equalsIgnoreCase("Linux")) {
 			setInternalIp(getLinuxIp());
 		} else { 
 			setInternalIp(getWindowsIp());
 		}
-
 		setMacAddress(parseMacAddress());
 		parseExternalIp();					
 	}	
@@ -49,9 +47,7 @@ public class ServerSettings {
 	}
 	
 	public String getWindowsIp() {
-		
-		String ip = ""; 
-
+		String ip = "";
 			try {
 				InetAddress hostIp = InetAddress.getLocalHost();
 				ip = hostIp.getHostAddress();
@@ -92,8 +88,7 @@ public class ServerSettings {
 		try {
 			whatismyip = new URL("http://api.externalip.net/ip/");
 			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-				                whatismyip.openStream()));
+				BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 				externalIp = in.readLine();
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -104,28 +99,27 @@ public class ServerSettings {
 		}
 	}
 	
-	public static String getExternalIp() {
+	public String getExternalIp() {
 		return externalIp;
 	}
 	
-	public static void setInternalIp(String input) {
+	public void setInternalIp(String input) {
 		internalIp = input;
 	}
 	
-	public static String getInteralIp() {
+	public String getInteralIp() {
 		return internalIp;
 	}
 	
-	public static void setMacAddress(String input) {
+	public void setMacAddress(String input) {
 		macAddress = input;
 	}
 	
-	public static String getMacAddress() {
+	public String getMacAddress() {
 		return macAddress;
 	}
 	
-	public static int getPort() {
-		// get the port from stored settings file
+	public int getPort() {
 		return 5555;
 	}
 			
