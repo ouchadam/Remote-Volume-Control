@@ -4,7 +4,7 @@ import com.rvc.util.ExeptionLogger;
 
 import java.io.BufferedReader;
 
-public class SocketReader implements Runnable {
+class SocketReader implements Runnable {
 
     private final Thread readClientResponse;
     private final BufferedReader in;
@@ -26,11 +26,14 @@ public class SocketReader implements Runnable {
 
         Protocol protocol = new Protocol(connectionState);
 
-        while (connectionState.getServerRunning()) {
-            if (connectionState.getSocketsOpened()) {
+        while (connectionState.isServerRunning()) {
+            if (connectionState.isSocketsOpened()) {
                 try {
-                    message = protocol.processInput(in.readLine());
-                    receiverCallback.onReceiveMessage(message);
+                    String rawMessage = in.readLine();
+                    if (rawMessage != null) {
+                        message = protocol.processInput(rawMessage);
+                        receiverCallback.onReceiveMessage(message);
+                    }
                 } catch (Exception e) {
                     ExeptionLogger.saveException(e);
                     connectionState.setServerRunning(false);

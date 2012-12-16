@@ -17,7 +17,7 @@ public class Countdown implements Runnable {
     public void run() {
         try {
             for (int i = 10; i > 0; i--) {
-                if (connectionState.getClientConnected()) {
+                if (connectionState.isClientConnected()) {
                     timeoutCallback.onConnected();
                     break;
                 } else {
@@ -25,9 +25,9 @@ public class Countdown implements Runnable {
                     Thread.sleep(1000);
                 }
             }
-            if (connectionState.getServerRunning()) {
+            if (connectionState.isServerRunning()) {
 
-                if (!connectionState.getClientConnected()) {
+                if (!connectionState.isClientConnected()) {
                     timeoutCallback.onConnectionTimedOut();
                 }
             }

@@ -2,6 +2,7 @@ package com.rvc;
 
 import com.rvc.gui.ServerGui;
 import com.rvc.server.Server;
+import com.rvc.server.ServerSettings;
 
 public class Main {
 
@@ -19,7 +20,7 @@ public class Main {
 
     private void initServer() {
         serverSettings = new ServerSettings();
-        server = new Server(serverSettings.getPort());
+        server = new Server(serverSettings);
     }
 
     private void initGui() {
@@ -33,6 +34,5 @@ public class Main {
             serverGui.setServer(server);
         }
     }
-
 
 }

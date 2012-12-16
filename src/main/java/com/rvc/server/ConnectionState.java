@@ -6,12 +6,13 @@ public class ConnectionState {
     private boolean clientConnected;
     private boolean serverRunning;
     private boolean socketsOpened;
+    private boolean ioOpened;
 
     public void setClientConnected(boolean clientConnected) {
         this.clientConnected = clientConnected;
     }
 
-    public boolean getServerRunning() {
+    public boolean isServerRunning() {
         return serverRunning;
     }
 
@@ -19,7 +20,7 @@ public class ConnectionState {
         this.serverRunning = serverRunning;
     }
 
-    public boolean getClientConnected() {
+    public boolean isClientConnected() {
         return clientConnected;
     }
 
@@ -31,11 +32,19 @@ public class ConnectionState {
         return serverQuit;
     }
 
-    public boolean getSocketsOpened() {
+    public boolean isSocketsOpened() {
         return socketsOpened;
     }
 
     public void setSocketsOpened(boolean state) {
         socketsOpened = state;
+    }
+
+    public boolean isIoOpened() {
+        return ioOpened;
+    }
+
+    public void setIoOpened(boolean ioOpened) {
+        this.ioOpened = ioOpened;
     }
 }

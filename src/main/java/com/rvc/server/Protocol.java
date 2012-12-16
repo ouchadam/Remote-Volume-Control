@@ -1,102 +1,76 @@
 package com.rvc.server;
 
-import com.rvc.volume.VolumeControl;
+import com.rvc.util.Shutdown;
+import com.rvc.volume.LinuxVolume;
+import com.rvc.volume.MacVolume;
+import com.rvc.volume.VolumeController;
+import com.rvc.volume.WinVolume;
 
-import java.io.IOException;
+class Protocol {
 
-public class Protocol {
-
-	private String exit;
-	private String vol;
+    private static final String UPDATE_VOLUME = "uvol";
+    private static final String CONNECTED = "conn";
+    private static final String SHUTDOWN = "sdown";
+    private static final String EXIT = "exit";
+    private static final String VOLUME = "vol";
 
     private final ConnectionState server;
-	
+    private final VolumeController volumeController;
+
+    private String exitCode;
+	private String vol;
+
 	Protocol(ConnectionState server) {
         this.server = server;
-        setExitCode("0");
+        exitCode = "0";
 		this.vol = "00";
+        volumeController = getVolumeController();
 	}
-	
-	private synchronized void setExitCode(String exit) {
-		this.exit = exit;
-	}
-	
-	public synchronized String getExitCode() {
-		return this.exit;
-	}
-	
-    public String processInput(String input) {
-    	
-    	String output = "0100";
-    	
-    	int tempState = server.getServerRunning()? 1:0;
-    	String serverState = String.valueOf(tempState);
-    	
-    	if (input == null) {
-    		input = output;
-        }
 
-        if (input.equals("uvol")) {
-        	vol = String.format("%02x", VolumeControl.getVolume());
+    private VolumeController getVolumeController() {
+        if (System.getProperty("os.name").contains("Windows")) {
+            return new WinVolume();
+        } else if (System.getProperty("os.name").contains("MAC")) {
+            return new MacVolume();
+        } else {
+            return new LinuxVolume();
         }
-        
-        if (input.equals("conn")) {
+    }
+
+    public String processInput(String input) {
+        if (input.equals(CONNECTED)) {
         	server.setClientConnected(true);
         }
     	
-    	if (server.getClientConnected()) {
-            if (input.equals("sdown")) {
-                System.out.println("Client chose shutdown");
-                shutDown();                           
-            } 
-            if (input.equals("exit")) {
-            	server.setClientConnected(false);
-                setExitCode("1");
-                System.out.println("Client chose to disconnect");                          
-            }
-            if (input.substring(0, 3).equals("vol")) {
-            	VolumeControl.setVolume(Integer.parseInt(input.substring(3)));
-                System.out.println(input.substring(3));
-            }
+    	if (server.isClientConnected()) {
+            handleMessage(input);
     	}
             
-        output = getExitCode() + serverState + vol;
-		return output;
+        return exitCode + getServerState() + vol;
     }
-    
-	public void shutDown() {
-		if (System.getProperty("os.name").equalsIgnoreCase("Windows 7")) {
-			shutdownWindows();
-		} else {
-			shutdownLinux();
-		}		
-	}
-	
-	public void shutdownLinux() {
-		serverCommand("/sbin/halt");
-	}
-	
-	public void shutdownWindows() {
-		serverCommand(new String[] { "shutdown", "-s"});
-	}
-	
-	public void serverCommand(String cmd) {
-		this.serverCommand(new String[] { cmd });
-	}
-	
-	public void serverCommand(final String[] cmd) {
-		
-		Thread t = new Thread() {
-			public void run() {
-				try {
-					@SuppressWarnings("unused")
-					Process process = Runtime.getRuntime().exec(cmd);   
-				} catch (IOException ex) {
-					System.err.println(ex);
-				} 				
-			}
-		};
-		t.start();
-	}
+
+    private void handleMessage(String input) {
+        if (input.equals(UPDATE_VOLUME)) {
+            vol = String.format("%02x", volumeController.getVolume());
+        }
+        if (input.equals(SHUTDOWN)) {
+            System.out.println("Client chose shutdown");
+            new Shutdown().shutDown();
+        }
+        if (input.equals(EXIT)) {
+            server.setClientConnected(false);
+            exitCode = "1";
+            System.out.println("Client chose to disconnect");
+        }
+        if (input.substring(0, 3).equals(VOLUME)) {
+            volumeController.setVolume(Integer.parseInt(input.substring(3)));
+            System.out.println(input.substring(3));
+        }
+    }
+
+    private String getServerState() {
+        return String.valueOf(server.isServerRunning()? 1:0);
+    }
+
 }
 	

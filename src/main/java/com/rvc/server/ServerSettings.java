@@ -1,4 +1,4 @@
-package com.rvc;
+package com.rvc.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,9 +82,7 @@ public class ServerSettings {
 	}
 	
 	public void parseExternalIp()  {
-		
 		URL whatismyip;
-		
 		try {
 			whatismyip = new URL("http://api.externalip.net/ip/");
 			try {

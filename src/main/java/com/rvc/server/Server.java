@@ -12,21 +12,21 @@ import java.net.Socket;
 
 public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout {
 
+    private static final String UPDATE_SERVER_START = "Server start";
+    private static final String UPDATE_WAITING_FOR_CLIENT = "Waiting for client";
+    private static final String UPDATE_CLIENT_SOCKET_CONNECTED = "Client Socket Conn";
+    private static final String ERROR_COULD_NOT_CONNECT = "Could not connect";
+    private static final String ERROR_IO_FAILED = "Error : IO failed";
+
     private final ConnectionState connectionState;
 
     private ServerCallbacks callback;
-    private boolean ioOpened;
     private int port;
     private PrintWriter out;
 
-    public Server(int port) {
-        setPort(port);
-        ioOpened = false;
+    public Server(ServerSettings serverSettings) {
+        port = serverSettings.getPort();
         connectionState = new ConnectionState();
-    }
-
-    private void setPort(int port) {
-        this.port = port;
     }
 
     private int getPort() {
@@ -38,8 +38,8 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     }
 
     public boolean startServer() {
-        System.out.println("Server start");
-        setStatus("Server start");
+        System.out.println(UPDATE_SERVER_START);
+        updateStatus(UPDATE_SERVER_START);
 
         Socket clientSocket = null;
         ServerSocket serverSocket = null;
@@ -79,16 +79,17 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     }
 
     private Socket createClientSocket(Socket clientSocket, ServerSocket serverSocket) {
-        System.out.println("Waiting for client");
-        setStatus("Waiting for client");
+        System.out.println(UPDATE_WAITING_FOR_CLIENT);
+        updateStatus(UPDATE_WAITING_FOR_CLIENT);
         try {
             clientSocket = serverSocket.accept();
-            System.out.println("Client Socket Connected");
-            setStatus("Client Socket Conn");
+            System.out.println(UPDATE_CLIENT_SOCKET_CONNECTED);
+            updateStatus(UPDATE_CLIENT_SOCKET_CONNECTED);
             connectionState.setSocketsOpened(true);
             connectionState.setServerRunning(true);
         } catch (IOException e) {
-            System.out.println("Could not connect");
+            System.out.println(ERROR_COULD_NOT_CONNECT);
+            updateError(ERROR_COULD_NOT_CONNECT);
             e.printStackTrace();
         }
         return clientSocket;
@@ -100,7 +101,7 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
             out = new PrintWriter(clientSocket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
-            setError("Error : IO failed");
+            updateError(ERROR_IO_FAILED);
             connectionState.setServerRunning(false);
         }
         return out;
@@ -109,10 +110,10 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     private BufferedReader createInputIO(BufferedReader in, Socket clientSocket) {
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            ioOpened = true;
+            connectionState.setIoOpened(true);
         } catch (IOException e) {
             e.printStackTrace();
-            setError("Error : IO failed");
+            updateError(ERROR_IO_FAILED);
             connectionState.setServerRunning(false);
         }
         return in;
@@ -126,12 +127,12 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     }
 
     public void closeIO(BufferedReader in, PrintWriter out) {
-        if (ioOpened) {
+        if (connectionState.isIoOpened()) {
             try {
                 out.flush();
                 out.close();
                 in.close();
-                this.ioOpened = false;
+                connectionState.setIoOpened(false);
                 System.out.println("IO closed");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -140,7 +141,7 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     }
 
     public void closeSockets(Socket clientSocket, ServerSocket serverSocket) {
-        if (connectionState.getSocketsOpened()) {
+        if (connectionState.isSocketsOpened()) {
             try {
                 serverSocket.close();
                 clientSocket.close();
@@ -152,7 +153,7 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         }
     }
 
-    private void setError(String error) {
+    private void updateError(String error) {
         callback.onErrorUpdate(error);
     }
 
@@ -165,14 +166,14 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         return connectionState.getServerQuit();
     }
 
-    private void setStatus(String status) {
+    private void updateStatus(String status) {
         callback.onStatusUpdate(status);
     }
 
     @Override
     public void onCountdown(int value) {
         System.out.print('\r' + "TIMEOUT : " + value);
-        setStatus("Timeout : " + value);
+        updateStatus("Timeout : " + value);
     }
 
     @Override
@@ -185,6 +186,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     public void onConnected() {
         System.out.println("\nClient Connection Confirmed");
         callback.onClientConnected();
-        setStatus("Client Connected");
+        updateStatus("Client Connected");
     }
 }
