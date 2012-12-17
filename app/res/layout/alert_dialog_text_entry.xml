@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Server Name" />
+
+    <EditText
+        android:id="@+id/serverName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ip Address" />
+
+    <EditText
+        android:id="@+id/ipAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Port" />
+
+    <EditText
+        android:id="@+id/port"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="phone" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mac Address" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+       
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/mac_1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:singleLine="true"
+            android:layout_width="36dp"
+            android:layout_height="38dp"
+            android:ems="2"
+            android:inputType="textNoSuggestions"
+            android:background="@android:color/white"
+            android:maxLength="2" />
+
+        <TextView
+            android:id="@+id/textViewBreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":" />
+
+        <EditText
+            android:id="@+id/mac_2"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:singleLine="true"
+            android:layout_width="36dp"
+            android:layout_height="38dp"
+            android:ems="2"
+            android:inputType="textNoSuggestions"
+            android:background="@android:color/white"
+            android:maxLength="2" />
+
+
+        <TextView
+            android:id="@+id/textViewBreak2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":" />
+
+        <EditText
+            android:id="@+id/mac_3"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:singleLine="true"
+            android:layout_width="36dp"
+            android:layout_height="38dp"
+            android:ems="2"
+            android:inputType="textNoSuggestions"
+            android:background="@android:color/white"
+            android:maxLength="2" />
+
+        <TextView
+            android:id="@+id/textViewBreak3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":" />
+
+        <EditText
+            android:id="@+id/mac_4"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:singleLine="true"
+            android:layout_width="36dp"
+            android:layout_height="38dp"
+            android:ems="2"
+            android:inputType="textNoSuggestions"
+            android:background="@android:color/white"
+            android:maxLength="2" />
+
+        <TextView
+            android:id="@+id/textViewBreak4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":" />
+
+        <EditText
+            android:id="@+id/mac_5"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:singleLine="true"
+            android:layout_width="36dp"
+            android:layout_height="38dp"
+            android:ems="2"
+            android:inputType="textNoSuggestions"
+            android:background="@android:color/white"
+            android:maxLength="2" />
+
+        <TextView
+            android:id="@+id/textViewBreak5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":" />
+
+        <EditText
+            android:id="@+id/mac_6"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:singleLine="true"
+            android:layout_width="36dp"
+            android:layout_height="38dp"
+            android:ems="2"
+            android:inputType="textNoSuggestions"
+            android:background="@android:color/white"
+            android:maxLength="2" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="connected">Connected to the server</string>
+    <string name="notconnected">Not Connected</string>
+    <string name="connecting">Connecting</string>
+    <string name="app_name">Remote Volume Control</string>
+    <string name="menu_connect">Connect</string>
+    <string name="menu_server_list">Server List</string>
+    <string name="alert_dialog_text_entry">Add new server</string>
+
+</resources>
