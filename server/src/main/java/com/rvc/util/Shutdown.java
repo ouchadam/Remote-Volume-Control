@@ -4,8 +4,14 @@ import java.io.IOException;
 
 public class Shutdown {
 
+    private final OSHelper osHelper;
+
+    public Shutdown() {
+        osHelper = new OSHelper();
+    }
+
     public void shutDown() {
-        if (OSHelper.isWindows7()) {
+        if (osHelper.isWindows7()) {
             shutdownWindows();
         } else {
             shutdownLinux();

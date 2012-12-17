@@ -1,5 +1,6 @@
 package com.rvc.server;
 
+import com.rvc.util.OSHelper;
 import com.rvc.util.Shutdown;
 import com.rvc.volume.VolumeController;
 import com.rvc.volume.controller.VolumeControllerFactory;
@@ -22,7 +23,7 @@ class Protocol {
         this.server = server;
         exitCode = "0";
 		this.vol = "00";
-        volumeController = VolumeControllerFactory.getVolumeController();
+        volumeController = VolumeControllerFactory.getVolumeController(new OSHelper());
 	}
 
     public String processInput(String input) {

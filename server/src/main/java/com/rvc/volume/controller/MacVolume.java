@@ -17,7 +17,7 @@ class MacVolume implements VolumeController {
         try {
             String cmd = "osascript -e set volw ouput volume " + Float.toString(decimalVol);
             Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec(new String[] {"/bin/tcsh", "-c", cmd});
+            rt.exec(new String[] {"/bin/tcsh", "-c", cmd});
         } catch (IOException e) {
             e.printStackTrace();
         }

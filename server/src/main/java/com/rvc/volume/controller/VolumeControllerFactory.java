@@ -6,10 +6,10 @@ import com.rvc.volume.VolumeController;
 
 public class VolumeControllerFactory {
 
-    public static VolumeController getVolumeController() {
-        if (OSHelper.isWindows7()) {
+    public static VolumeController getVolumeController(OSHelper osHelper) {
+        if (osHelper.isWindows7()) {
             return new WinVolume();
-        } else if (OSHelper.isOSX()) {
+        } else if (osHelper.isOSX()) {
             return new MacVolume();
         } else {
             return new LinuxVolume();
