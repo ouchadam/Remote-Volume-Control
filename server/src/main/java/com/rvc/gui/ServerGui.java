@@ -1,8 +1,9 @@
 package com.rvc.gui;
 
+import com.rvc.server.Server;
 import com.rvc.server.ServerCallbacks;
 import com.rvc.server.ServerSettings;
-import com.rvc.server.Server;
+import com.sun.javaws.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -109,10 +110,11 @@ public class ServerGui extends JFrame implements ServerCallbacks {
     }
 
     private Image createImage(String fileName, String description) {
-        URL imageURL = ServerGui.class.getResource("/resources/" + fileName);
+        URL imageURL = Main.class.getResource("/" + fileName);
 
         if (imageURL == null) {
             System.err.println("Resource not found: " + fileName);
+            System.exit(1);
             return null;
         } else {
             return (new ImageIcon(imageURL, description)).getImage();

@@ -3,7 +3,6 @@ package com.adam.rvc;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.io.IOException;
+
 public class DroidRemoteOnActivity extends Activity implements OnClickListener  {
 		
 	private final static int CONNECT = 0;
@@ -26,7 +27,7 @@ public class DroidRemoteOnActivity extends Activity implements OnClickListener  
 	private final static int EXIT = 2;
 	private final static int WAKE = 3;
 		
-	private Client client;
+	private ClientConnection client;
 	private Handler handle;
 	private TextView text;
 	private ProgressBar pBar;
@@ -110,9 +111,13 @@ public class DroidRemoteOnActivity extends Activity implements OnClickListener  
 	}
 		
 	private void init() {
-		
-		client = new Client();
-		handle = new Handler();	
+
+        try {
+            client = new ClientConnection(ServerDatabase.getSelectedIp(), ServerDatabase.getSelectedPort());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        handle = new Handler();
 	}
 	
     class seekListener implements SeekBar.OnSeekBarChangeListener {
@@ -134,7 +139,7 @@ public class DroidRemoteOnActivity extends Activity implements OnClickListener  
 		switch(v.getId()) {	
 		
 		case R.id.button1:
-			if(client.isServerConnectable()) {
+			if(client != null) {
 				writeToServer("sdown");
 			}
 			break;
@@ -176,7 +181,7 @@ public class DroidRemoteOnActivity extends Activity implements OnClickListener  
 		
     	pBar.setVisibility(View.INVISIBLE);
     	
-        if(client.isServerConnectable()) {
+        if(client != null) {
         	client.tryingToConnect(false);
         	text.setText(this.getString(R.string.connected));
         }else {
@@ -255,14 +260,14 @@ public class DroidRemoteOnActivity extends Activity implements OnClickListener  
 			
 			switch(index[0]) {			
 				case CONNECT: 
-					if(!client.isSocketConnected()) {
-						client.tryingToConnect(true);						
-						client.connectToServer(ServerDatabase.getSelectedIp(), ServerDatabase.getSelectedPort());		
+					if(!client.tryingToConnect()) {
+						client.tryingToConnect(true);
+						client.connectToServer();
 						getServerVolume();
 					}																		
 					break;
 				case WRITE:
-					if (client.isServerConnectable())
+					if (client != null)
 						client.writeToServer(toServer);				
 					break;
 				case EXIT:

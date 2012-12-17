@@ -38,17 +38,12 @@
   </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.12</version>
-        <configuration>
-          <test>*.java</test>
-          <runOrder>random</runOrder>
-          <forkMode>always</forkMode>
-        </configuration>
-      </plugin>
-    </plugins>
+      <resources>
+          <resource>
+              <directory>src/main/resources</directory>
+              <filtering>true</filtering>
+          </resource>
+      </resources>
   </build>
 
 </project>
