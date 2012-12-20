@@ -4,6 +4,8 @@ import com.rvc.gui.ServerGui;
 import com.rvc.server.Server;
 import com.rvc.server.ServerSettings;
 
+import java.io.IOException;
+
 public class Main {
 
     private Server server;
@@ -13,26 +15,38 @@ public class Main {
     public static void main(String args[]) {
         Main instance = new Main();
 
-        instance.initServer();
+        instance.initServerSettings();
         instance.initGui();
-        instance.serverLoop();
+        try {
+            instance.serverLoop();
+        } catch (IOException e) {
+            // Server was closed whilst waiting for a connection
+        }
+        instance.finish();
     }
 
-    private void initServer() {
+    private void initServerSettings() {
         serverSettings = new ServerSettings();
-        server = new Server(serverSettings);
     }
 
     private void initGui() {
         serverGui = new ServerGui(serverSettings);
-        serverGui.setServer(server);
     }
 
-    private void serverLoop() {
-        while (server.startServer()) {
+    private void serverLoop() throws IOException {
+        do {
             initServer();
             serverGui.setServer(server);
-        }
+        } while(server.startServer());
+    }
+
+    private void initServer() {
+        server = new Server(serverSettings);
+    }
+
+    private void finish() {
+        serverGui.finish();
+        System.exit(0);
     }
 
 }

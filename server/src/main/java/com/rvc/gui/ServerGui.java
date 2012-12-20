@@ -106,12 +106,10 @@ public class ServerGui extends JFrame implements ServerCallbacks {
     private void serverExit() {
         System.out.println("Server Quitting");
         server.quit();
-        System.exit(0);
     }
 
     private Image createImage(String fileName, String description) {
         URL imageURL = Main.class.getResource("/" + fileName);
-
         if (imageURL == null) {
             System.err.println("Resource not found: " + fileName);
             System.exit(1);
@@ -159,5 +157,10 @@ public class ServerGui extends JFrame implements ServerCallbacks {
 
     private void showPopup(String message) {
         trayIcon.displayMessage(message, "", TrayIcon.MessageType.INFO);
+    }
+
+    public void finish() {
+        server = null;
+        dispose();
     }
 }
