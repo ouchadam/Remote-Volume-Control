@@ -1,7 +1,7 @@
 package com.adam.rvc.util;
 
 import android.content.Context;
-import android.content.Intent;
+import com.adam.rvc.receiver.ReceiverIntentFactory;
 
 public class StatusUpdater {
 
@@ -24,14 +24,7 @@ public class StatusUpdater {
     }
 
     public void updateStatus(String message) {
-        context.sendBroadcast(createMessageIntent(message));
-    }
-
-    private Intent createMessageIntent(String message) {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_STATUS_MESSAGE);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        return intent;
+        context.sendBroadcast(ReceiverIntentFactory.broadcastStatusMessage(message));
     }
 
 }

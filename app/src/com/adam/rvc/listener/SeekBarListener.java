@@ -1,4 +1,4 @@
-package com.adam.rvc;
+package com.adam.rvc.listener;
 
 import android.content.Context;
 import android.widget.SeekBar;

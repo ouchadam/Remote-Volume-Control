@@ -3,12 +3,13 @@ package com.adam.rvc.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import com.adam.rvc.receiver.ReceiverIntentFactory;
 import com.adam.rvc.util.Log;
 import com.adam.rvc.util.StatusUpdater;
 
 import java.io.IOException;
 
-public class RVCBackgroundService extends Service implements RVCConnection.OnVolumeUpdate {
+public class RVCBackgroundService extends Service implements RVCClient.OnMessageReceived {
 
     public static final String ACTION_START = "com.adam.rvc.server.pushservice.ACTION_START";
     public static final String ACTION_WRITE = "com.adam.rvc.server.pushservice.ACTION_WRTE";
@@ -16,15 +17,18 @@ public class RVCBackgroundService extends Service implements RVCConnection.OnVol
     public static final String EXTRA_PORT_INT = "com.adam.rvc.service.pushservice.EXTRA_PORT_INT";
     public static final String EXTRA_WRITE_MESSAGE = "com.adam.rvc.service.pushservice.EXTRA_WRITE_MESSAGE";
 
-    private final RVCConnection.OnVolumeUpdate onVolumeUpdate = this;
+    private final RVCClient.OnMessageReceived onMessageReceived = this;
 
-    private StatusUpdater statusUpdater;
+    private final StatusUpdater statusUpdater;
     private ServerConnection mConnection;
+
+    public RVCBackgroundService() {
+        statusUpdater = new StatusUpdater(this);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        statusUpdater = new StatusUpdater(this);
         statusUpdater.updateStatusAndLog("Creating service");
     }
 
@@ -43,10 +47,11 @@ public class RVCBackgroundService extends Service implements RVCConnection.OnVol
 
     private void connect(final String ipAddress, final int port) {
         new Thread(new Runnable() {
+
             @Override
             public void run() {
                 try {
-                    mConnection = new RVCConnection(ipAddress, port, onVolumeUpdate, statusUpdater);
+                    mConnection = new RVCConnection(ipAddress, port, onMessageReceived, statusUpdater);
                     mConnection.connect();
                 } catch (IOException e) {
                     mConnection = null;
@@ -80,7 +85,12 @@ public class RVCBackgroundService extends Service implements RVCConnection.OnVol
     }
 
     @Override
-    public void onVolumeUpdate(int volume) {
-        statusUpdater.updateStatusAndLog("Volume : " + volume);
+    public void OnMessageReceived(String message) {
+        broadcastServerMessage(message);
     }
+
+    private void broadcastServerMessage(String message) {
+        sendBroadcast(ReceiverIntentFactory.broadcastServerMessage(message));
+    }
+
 }

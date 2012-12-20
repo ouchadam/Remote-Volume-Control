@@ -1,29 +1,49 @@
 package com.adam.rvc;
 
 import android.app.Activity;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import com.adam.rvc.listener.SeekBarListener;
+import com.adam.rvc.receiver.ServerMessageReceiver;
 import com.adam.rvc.receiver.StatusUpdateReceiver;
 import com.adam.rvc.service.RVCServiceFactory;
-import com.adam.rvc.util.StatusUpdater;
+import com.adam.rvc.util.MessageHandler;
 
 public class MainActivity extends Activity implements StatusUpdateReceiver.OnStatusUpdated {
 
     private static final String IP = "192.168.0.7";
     private static final int  PORT = 5555;
 
+    private final StatusUpdateReceiver statusReceiver;
+    private final ServerMessageReceiver messageReceiver;
+
     private TextView statusText;
-    private StatusUpdateReceiver statusReceiver;
+
+    public MainActivity() {
+        statusReceiver = new StatusUpdateReceiver(this);
+        messageReceiver = new ServerMessageReceiver();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        statusText = (TextView) findViewById(R.id.status_text);
-        statusReceiver = new StatusUpdateReceiver(this);
+        initMessageReceiver();
+        initViews();
+    }
+
+    private void initMessageReceiver() {
+        messageReceiver.setMessageHandler(new MessageHandler(this));
+    }
+
+    private void initViews() {
+        initText();
         initSeekBar();
+    }
+
+    private void initText() {
+        statusText = (TextView) findViewById(R.id.status_text);
     }
 
     private void initSeekBar() {
@@ -36,18 +56,24 @@ public class MainActivity extends Activity implements StatusUpdateReceiver.OnSta
     protected void onResume() {
         super.onResume();
         startService(RVCServiceFactory.startService(this, IP, PORT));
-        registerReceiver(statusReceiver, createStatusUpdateFilter());
+        registerReceivers();
     }
 
-    private IntentFilter createStatusUpdateFilter() {
-        return new IntentFilter(StatusUpdater.ACTION_STATUS_MESSAGE);
+    private void registerReceivers() {
+        registerReceiver(statusReceiver, statusReceiver.getIntentFilter());
+        registerReceiver(messageReceiver, messageReceiver.getIntentFilter());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         stopService(RVCServiceFactory.stopPushService(this));
+        unregisterReceivers();
+    }
+
+    private void unregisterReceivers() {
         unregisterReceiver(statusReceiver);
+        unregisterReceiver(messageReceiver);
     }
 
     @Override

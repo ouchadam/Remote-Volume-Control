@@ -1,16 +1,21 @@
 package com.adam.rvc.receiver;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import com.adam.rvc.util.StatusUpdater;
 
-public class StatusUpdateReceiver extends BroadcastReceiver {
+public class StatusUpdateReceiver extends BaseReceiver {
 
     private final OnStatusUpdated statusUpdatedListener;
 
-    public StatusUpdateReceiver(OnStatusUpdated statusUpatedListener) {
-        this.statusUpdatedListener = statusUpatedListener;
+    public StatusUpdateReceiver(OnStatusUpdated statusUpdatedListener) {
+        this.statusUpdatedListener = statusUpdatedListener;
+    }
+
+    @Override
+    public IntentFilter getIntentFilter() {
+        return new IntentFilter(StatusUpdater.ACTION_STATUS_MESSAGE);
     }
 
     @Override

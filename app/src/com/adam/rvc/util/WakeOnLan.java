@@ -1,6 +1,4 @@
-package com.adam.rvc;
-
-import com.adam.rvc.util.MalformedMacAddressException;
+package com.adam.rvc.util;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
