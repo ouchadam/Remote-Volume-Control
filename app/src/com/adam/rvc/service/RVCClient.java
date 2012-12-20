@@ -14,6 +14,7 @@ class RVCClient {
     private static final String CHECK = "check";
     private static final String CONNECTION = "conn";
     private static final String UPDATE_VOLUME = "uvol";
+    private static final String READ_LINE_ERROR = "";
 
     private final Socket socket;
     private final PrintWriter output;
@@ -42,6 +43,7 @@ class RVCClient {
         int attempts = 0;
         while (!socket.isConnected()) {
             sleepThread();
+            attempts ++;
             if (attempts > MAX_RETRIES) {
                 return false;
             }
@@ -69,7 +71,10 @@ class RVCClient {
             public void run() {
                 output.println(CHECK);
                 do {
-                    onMessageReceived.onMessageReceived(readLineFromServer());
+                    String message = readLineFromServer();
+                    if (validMessage(message)) {
+                        onMessageReceived.onMessageReceived(message);
+                    }
                 } while (!socket.isClosed());
             }
         }).start();
@@ -80,8 +85,12 @@ class RVCClient {
             return input.readLine();
         } catch (IOException e) {
             e.printStackTrace();
+            return READ_LINE_ERROR;
         }
-        return "";
+    }
+
+    private boolean validMessage(String message) {
+        return message != null && message.length() > 0;
     }
 
     public void writeToServer(String message) {
