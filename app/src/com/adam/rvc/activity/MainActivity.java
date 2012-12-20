@@ -1,16 +1,14 @@
-package com.adam.rvc;
+package com.adam.rvc.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import com.adam.rvc.listener.SeekBarListener;
+import com.adam.rvc.R;
 import com.adam.rvc.receiver.ServerMessageReceiver;
 import com.adam.rvc.receiver.StatusUpdateReceiver;
 import com.adam.rvc.service.RVCServiceFactory;
 import com.adam.rvc.util.MessageHandler;
 
-public class MainActivity extends Activity implements StatusUpdateReceiver.OnStatusUpdated {
+public class MainActivity extends RVCActivity implements StatusUpdateReceiver.OnStatusUpdated {
 
     private static final String IP = "192.168.0.7";
     private static final int  PORT = 5555;
@@ -39,17 +37,10 @@ public class MainActivity extends Activity implements StatusUpdateReceiver.OnSta
 
     private void initViews() {
         initText();
-        initSeekBar();
     }
 
     private void initText() {
         statusText = (TextView) findViewById(R.id.status_text);
-    }
-
-    private void initSeekBar() {
-        SeekBar seekBar = (SeekBar) findViewById(R.id.volume_seek_bar);
-        seekBar.setMax(100);
-        seekBar.setOnSeekBarChangeListener(new SeekBarListener(this));
     }
 
     @Override

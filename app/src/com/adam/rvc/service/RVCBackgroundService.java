@@ -79,6 +79,7 @@ public class RVCBackgroundService extends Service implements RVCClient.OnMessage
 
     private void disconnectConnection() {
         if (mConnection != null) {
+            mConnection.write("exit");
             mConnection.disconnect();
             mConnection = null;
         }

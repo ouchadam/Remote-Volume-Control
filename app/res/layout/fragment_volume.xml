@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              style="@style/Match">
+
+    <SeekBar
+        android:id="@+id/volume_seek_bar"
+        style="@style/MatchWidth"/>
+
+</LinearLayout>

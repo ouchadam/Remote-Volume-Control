@@ -18,11 +18,18 @@ public class MessageHandler implements OnMessageReceived {
 
     @Override
     public void onMessageReceived(String message) {
-        if (isDisconnectMessage(message)) {
-            disconnectFromServer();
-        } else {
-            updateStatus("volume : " + getVolumeFromMessage(message));
+        Log.log("Received message : " + message);
+        if (isValidMessage(message)) {
+            if (isDisconnectMessage(message)) {
+                disconnectFromServer();
+            } else {
+                updateStatus("volume : " + getVolumeFromMessage(message));
+            }
         }
+    }
+
+    private boolean isValidMessage(String message) {
+        return message != null && message.length() >= 4;
     }
 
     private void disconnectFromServer() {

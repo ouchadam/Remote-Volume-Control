@@ -3,6 +3,8 @@ package com.rvc.server;
 import com.rvc.util.ExceptionLogger;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.SocketException;
 
 class SocketReader implements Runnable {
 
@@ -34,9 +36,13 @@ class SocketReader implements Runnable {
                         message = protocol.processInput(rawMessage);
                         receiverCallback.onReceiveMessage(message);
                     }
-                } catch (Exception e) {
-                    ExceptionLogger.saveException(e);
-                    connectionState.setServerRunning(false);
+                } catch (IOException e) {
+                    if (e instanceof SocketException) {
+                        connectionState.setServerRunning(false);
+                    } else {
+                        ExceptionLogger.saveException(e);
+                        connectionState.setServerRunning(false);
+                    }
                 }
             }
 

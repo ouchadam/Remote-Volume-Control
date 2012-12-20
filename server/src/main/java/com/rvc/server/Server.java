@@ -100,8 +100,13 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     @Override
     public void onReceiveMessage(String message) {
         if (message.substring(1, 2).equals("1")) {
-            out.println(message);
+            sendMessage(message);
         }
+    }
+
+    private void sendMessage(String message) {
+        System.out.println("sending : " + message);
+        out.println(message);
     }
 
     public void closeIO() {
@@ -143,10 +148,17 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
 
     public void quit() {
         System.out.println("Quit method");
+        if (out != null) {
+            sendDisconnectPacket();
+        }
         connectionState.setServerRunning(false);
         connectionState.setServerQuit(true);
         closeSockets();
         closeIO();
+    }
+
+    private void sendDisconnectPacket() {
+        sendMessage("1000");
     }
 
     private boolean isServerToBeRestarted() {

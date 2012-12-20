@@ -9,7 +9,7 @@ public class ExceptionLogger {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
-        String s = sw.toString(); // stack trace as a string
+        String s = sw.toString();
 
         Calendar cal = Calendar.getInstance();
 

@@ -31,12 +31,12 @@ public class RVCClient {
     public void connect() {
         if (waitForSocketConnection()) {
             sendConnectPacket();
-            readVolumeFromServer();
+            readFromServer();
         }
     }
 
     private boolean waitForSocketConnection() {
-        for (int i = 0; i < 100; i ++) {
+        for (int i = 0; i < 100; i++) {
             if (socket.isConnected()) {
                 return true;
             } else {
@@ -44,11 +44,6 @@ public class RVCClient {
             }
         }
         return false;
-    }
-
-    private void sendConnectPacket() {
-        writeToServer(CONNECTION);
-        writeToServer(UPDATE_VOLUME);
     }
 
     private void sleepThread() {
@@ -59,15 +54,31 @@ public class RVCClient {
         }
     }
 
-    public void readVolumeFromServer() {
-        if (socket.isConnected()) {
-            output.println(CHECK);
-            try {
-                onMessageReceived.OnMessageReceived(input.readLine());
-            } catch (Exception e) {
-                closeSocket();
+    private void sendConnectPacket() {
+        writeToServer(CONNECTION);
+        writeToServer(UPDATE_VOLUME);
+    }
+
+    private void readFromServer() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                output.println(CHECK);
+                do {
+                    onMessageReceived.OnMessageReceived(readLineFromServer());
+                } while (!socket.isClosed());
             }
+        }).start();
+    }
+
+    private String readLineFromServer() {
+        try {
+            return input.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return "";
     }
 
     public void writeToServer(String message) {
