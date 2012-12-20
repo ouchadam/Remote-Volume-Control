@@ -3,13 +3,14 @@
               style="@style/Match"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/status_text"
-        style="@style/MatchWidth"/>
+    <fragment
+        android:id="@+id/status_fragment"
+        style="@style/MatchWidth"
+        android:name="com.adam.rvc.fragment.StatusFragment"/>
 
     <fragment
         android:id="@+id/volume_fragment"
-        style="@style/Match"
+        style="@style/MatchWidth"
         android:name="com.adam.rvc.fragment.VolumeFragment"/>
 
 </LinearLayout>

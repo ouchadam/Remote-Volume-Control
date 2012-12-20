@@ -2,24 +2,16 @@ package com.adam.rvc.listener;
 
 import android.content.Context;
 import android.widget.SeekBar;
-import com.adam.rvc.service.RVCServiceFactory;
 
-public class SeekBarListener implements SeekBar.OnSeekBarChangeListener {
-
-    private static final String VOLUME_MESSAGE_HEADER = "vol";
-
-    private final Context context;
+public class SeekBarListener extends VolumeListener implements SeekBar.OnSeekBarChangeListener {
 
     public SeekBarListener(Context context) {
-        this.context = context;
+        super(context);
     }
 
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        context.startService(RVCServiceFactory.writeToServer(context, createMessage(progress)));
-    }
-
-    private String createMessage(int progress) {
-        return VOLUME_MESSAGE_HEADER + progress;
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+        updateVolume(progress);
     }
 
     public void onStartTrackingTouch(SeekBar seekBar) {
