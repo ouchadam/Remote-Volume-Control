@@ -3,6 +3,7 @@ package com.adam.rvc.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import com.adam.rvc.R;
 import com.adam.rvc.receiver.OnMessageReceived;
 import com.adam.rvc.receiver.ReceiverIntentFactory;
 import com.adam.rvc.util.Log;
@@ -32,7 +33,7 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
     @Override
     public void onCreate() {
         super.onCreate();
-        statusUpdater.updateStatusAndLog("Creating service");
+        statusUpdater.updateStatusAndLog(getString(R.string.creating_service));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
                     connection.connect();
                 } catch (IOException e) {
                     connection = null;
-                    statusUpdater.updateStatusAndLog("Connection Failed", e);
+                    statusUpdater.updateStatusAndLog(getString(R.string.connection_failed), e);
                 }
             }
         }).start();
@@ -76,7 +77,7 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
 
     @Override
     public void onDestroy() {
-        statusUpdater.updateStatusAndLog("Service destroyed");
+        statusUpdater.updateStatusAndLog(getString(R.string.destroying_service));
         stop();
     }
 

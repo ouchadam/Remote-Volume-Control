@@ -8,5 +8,13 @@
     <string name="menu_connect">Connect</string>
     <string name="menu_server_list">Server List</string>
     <string name="alert_dialog_text_entry">Add new server</string>
+    <string name="service_name">RVC Background Service</string>
+
+    <!--Connection -->
+
+    <string name="connection_failed">Connection failed</string>
+    <string name="creating_service">Creating RVC service</string>
+    <string name="destroying_service">Destroying RVC service</string>
+
 
 </resources>

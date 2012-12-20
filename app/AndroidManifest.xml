@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.RVCBackgroundService" android:label="RVC Update Service"/>
+        <service android:name=".service.RVCBackgroundService" android:label="@string/service_name"/>
 
     </application>
 
