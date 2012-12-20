@@ -1,6 +1,6 @@
 package com.adam.rvc.service;
 
-public interface ServerConnection {
+interface ServerConnection {
 
     void connect();
 

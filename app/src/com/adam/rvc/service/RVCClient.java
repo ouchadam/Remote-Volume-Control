@@ -1,13 +1,16 @@
 package com.adam.rvc.service;
 
+import com.adam.rvc.receiver.OnMessageReceived;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class RVCClient {
+class RVCClient {
 
+    private static final int MAX_RETRIES = 100;
     private static final String CHECK = "check";
     private static final String CONNECTION = "conn";
     private static final String UPDATE_VOLUME = "uvol";
@@ -29,21 +32,21 @@ public class RVCClient {
     }
 
     public void connect() {
-        if (waitForSocketConnection()) {
+        if (attemptToVerifyConnection()) {
             sendConnectPacket();
             readFromServer();
         }
     }
 
-    private boolean waitForSocketConnection() {
-        for (int i = 0; i < 100; i++) {
-            if (socket.isConnected()) {
-                return true;
-            } else {
-                sleepThread();
+    private boolean attemptToVerifyConnection() {
+        int attempts = 0;
+        while (!socket.isConnected()) {
+            sleepThread();
+            if (attempts > MAX_RETRIES) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private void sleepThread() {
@@ -66,7 +69,7 @@ public class RVCClient {
             public void run() {
                 output.println(CHECK);
                 do {
-                    onMessageReceived.OnMessageReceived(readLineFromServer());
+                    onMessageReceived.onMessageReceived(readLineFromServer());
                 } while (!socket.isClosed());
             }
         }).start();
@@ -102,12 +105,6 @@ public class RVCClient {
                 e.printStackTrace();
             }
         }
-    }
-
-    public interface OnMessageReceived {
-
-        void OnMessageReceived(String message);
-
     }
 
 }

@@ -1,15 +1,16 @@
 package com.adam.rvc.service;
 
+import com.adam.rvc.receiver.OnMessageReceived;
 import com.adam.rvc.util.StatusUpdater;
 
 import java.io.IOException;
 
-public class RVCConnection implements ServerConnection {
+class RVCConnection implements ServerConnection {
 
     private final RVCClient client;
     private final StatusUpdater statusUpdater;
 
-    public RVCConnection(String ip, int port, RVCClient.OnMessageReceived onMessageReceived, StatusUpdater statusUpdater) throws IOException {
+    public RVCConnection(String ip, int port, OnMessageReceived onMessageReceived, StatusUpdater statusUpdater) throws IOException {
         this.statusUpdater = statusUpdater;
         client = new RVCClient(ip, port);
         client.setMessageListener(onMessageReceived);

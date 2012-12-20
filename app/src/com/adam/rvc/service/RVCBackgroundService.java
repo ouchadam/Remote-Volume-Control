@@ -3,21 +3,24 @@ package com.adam.rvc.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import com.adam.rvc.receiver.OnMessageReceived;
 import com.adam.rvc.receiver.ReceiverIntentFactory;
 import com.adam.rvc.util.Log;
 import com.adam.rvc.util.StatusUpdater;
 
 import java.io.IOException;
 
-public class RVCBackgroundService extends Service implements RVCClient.OnMessageReceived {
+public class RVCBackgroundService extends Service implements OnMessageReceived {
 
-    public static final String ACTION_START = "com.adam.rvc.server.pushservice.ACTION_START";
-    public static final String ACTION_WRITE = "com.adam.rvc.server.pushservice.ACTION_WRTE";
-    public static final String EXTRA_IP_ADDRESS = "com.adam.rvc.service.pushservice.EXTRA_IP_ADDRESS";
-    public static final String EXTRA_PORT_INT = "com.adam.rvc.service.pushservice.EXTRA_PORT_INT";
-    public static final String EXTRA_WRITE_MESSAGE = "com.adam.rvc.service.pushservice.EXTRA_WRITE_MESSAGE";
+    public static final String ACTION_START = "com.adam.rvc.service.rvcbackgroundservice.ACTION_START";
+    public static final String ACTION_WRITE = "com.adam.rvc.service.rvcbackgroundservice.ACTION_WRTE";
+    public static final String EXTRA_IP_ADDRESS = "com.adam.rvc.service.rvcbackgroundservice.EXTRA_IP_ADDRESS";
+    public static final String EXTRA_PORT_INT = "com.adam.rvc.service.rvcbackgroundservice.EXTRA_PORT_INT";
+    public static final String EXTRA_WRITE_MESSAGE = "com.adam.rvc.service.rvcbackgroundservice.EXTRA_WRITE_MESSAGE";
 
-    private final RVCClient.OnMessageReceived onMessageReceived = this;
+    private static final int EXTRA_ERROR_VALUE = 0;
+
+    private final OnMessageReceived onMessageReceived = this;
     private final StatusUpdater statusUpdater;
 
     private ServerConnection connection;
@@ -36,7 +39,7 @@ public class RVCBackgroundService extends Service implements RVCClient.OnMessage
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.log("Service started with intent : " + intent);
         if (intent.getAction().equals(ACTION_START)) {
-            connect(intent.getStringExtra(EXTRA_IP_ADDRESS), intent.getIntExtra(EXTRA_PORT_INT, 0));
+            connect(intent.getStringExtra(EXTRA_IP_ADDRESS), intent.getIntExtra(EXTRA_PORT_INT, EXTRA_ERROR_VALUE));
         } else if (intent.getAction().equals(ACTION_WRITE)) {
             writeMessageToServer(intent.getStringExtra(EXTRA_WRITE_MESSAGE));
         }
@@ -90,7 +93,7 @@ public class RVCBackgroundService extends Service implements RVCClient.OnMessage
     }
 
     @Override
-    public void OnMessageReceived(String message) {
+    public void onMessageReceived(String message) {
         broadcastServerMessage(message);
     }
 
