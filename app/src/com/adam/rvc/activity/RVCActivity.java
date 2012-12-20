@@ -1,6 +1,6 @@
 package com.adam.rvc.activity;
 
-import android.support.v4.app.FragmentActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-public abstract class RVCActivity extends FragmentActivity {
+public abstract class RVCActivity extends SherlockFragmentActivity {
 }

@@ -18,9 +18,9 @@ public class RVCBackgroundService extends Service implements RVCClient.OnMessage
     public static final String EXTRA_WRITE_MESSAGE = "com.adam.rvc.service.pushservice.EXTRA_WRITE_MESSAGE";
 
     private final RVCClient.OnMessageReceived onMessageReceived = this;
-
     private final StatusUpdater statusUpdater;
-    private ServerConnection mConnection;
+
+    private ServerConnection connection;
 
     public RVCBackgroundService() {
         statusUpdater = new StatusUpdater(this);
@@ -34,13 +34,11 @@ public class RVCBackgroundService extends Service implements RVCClient.OnMessage
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.log("Service started with intent=" + intent);
+        Log.log("Service started with intent : " + intent);
         if (intent.getAction().equals(ACTION_START)) {
             connect(intent.getStringExtra(EXTRA_IP_ADDRESS), intent.getIntExtra(EXTRA_PORT_INT, 0));
         } else if (intent.getAction().equals(ACTION_WRITE)) {
-            if (mConnection != null) {
-                mConnection.write(intent.getStringExtra(EXTRA_WRITE_MESSAGE));
-            }
+            writeMessageToServer(intent.getStringExtra(EXTRA_WRITE_MESSAGE));
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -51,15 +49,21 @@ public class RVCBackgroundService extends Service implements RVCClient.OnMessage
             @Override
             public void run() {
                 try {
-                    mConnection = new RVCConnection(ipAddress, port, onMessageReceived, statusUpdater);
-                    mConnection.connect();
+                    connection = new RVCConnection(ipAddress, port, onMessageReceived, statusUpdater);
+                    connection.connect();
                 } catch (IOException e) {
-                    mConnection = null;
+                    connection = null;
                     statusUpdater.updateStatusAndLog("Connection Failed", e);
                 }
             }
         }).start();
 
+    }
+
+    private void writeMessageToServer(String message) {
+        if (connection != null) {
+            connection.write(message);
+        }
     }
 
     @Override
@@ -78,10 +82,10 @@ public class RVCBackgroundService extends Service implements RVCClient.OnMessage
     }
 
     private void disconnectConnection() {
-        if (mConnection != null) {
-            mConnection.write("exit");
-            mConnection.disconnect();
-            mConnection = null;
+        if (connection != null) {
+            connection.write("exit");
+            connection.disconnect();
+            connection = null;
         }
     }
 

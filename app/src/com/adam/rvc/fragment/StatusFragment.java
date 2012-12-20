@@ -45,4 +45,5 @@ public class StatusFragment extends BaseFragment implements StatusUpdateReceiver
     public void onStatusUpdate(String message) {
         statusText.setText(message);
     }
+
 }

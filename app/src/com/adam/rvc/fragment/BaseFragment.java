@@ -2,9 +2,9 @@ package com.adam.rvc.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import com.actionbarsherlock.app.SherlockFragment;
 
-abstract class BaseFragment extends Fragment {
+abstract class BaseFragment extends SherlockFragment {
 
     protected Context context;
 
