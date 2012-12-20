@@ -8,7 +8,7 @@ import com.adam.rvc.util.StatusUpdater;
 
 import java.io.IOException;
 
-public class PushService extends Service implements RVCConnection.OnVolumeUpdate {
+public class RVCBackgroundService extends Service implements RVCConnection.OnVolumeUpdate {
 
     public static final String ACTION_START = "com.adam.rvc.server.pushservice.ACTION_START";
     public static final String ACTION_WRITE = "com.adam.rvc.server.pushservice.ACTION_WRTE";

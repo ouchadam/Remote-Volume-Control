@@ -2,7 +2,7 @@ package com.adam.rvc;
 
 import android.content.Context;
 import android.widget.SeekBar;
-import com.adam.rvc.service.PushServiceFactory;
+import com.adam.rvc.service.RVCServiceFactory;
 
 public class SeekBarListener implements SeekBar.OnSeekBarChangeListener {
 
@@ -15,7 +15,7 @@ public class SeekBarListener implements SeekBar.OnSeekBarChangeListener {
     }
 
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        context.startService(PushServiceFactory.writeToServer(context, createMessage(progress)));
+        context.startService(RVCServiceFactory.writeToServer(context, createMessage(progress)));
     }
 
     private String createMessage(int progress) {

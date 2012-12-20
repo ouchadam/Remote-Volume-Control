@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.adam.rvc.receiver.StatusUpdateReceiver;
-import com.adam.rvc.service.PushServiceFactory;
+import com.adam.rvc.service.RVCServiceFactory;
 import com.adam.rvc.util.StatusUpdater;
 
 public class MainActivity extends Activity implements StatusUpdateReceiver.OnStatusUpdated {
@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements StatusUpdateReceiver.OnSta
     @Override
     protected void onResume() {
         super.onResume();
-        startService(PushServiceFactory.startPushService(this, IP, PORT));
+        startService(RVCServiceFactory.startService(this, IP, PORT));
         registerReceiver(statusReceiver, createStatusUpdateFilter());
     }
 
@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements StatusUpdateReceiver.OnSta
     @Override
     protected void onPause() {
         super.onPause();
-        stopService(PushServiceFactory.stopPushService(this));
+        stopService(RVCServiceFactory.stopPushService(this));
         unregisterReceiver(statusReceiver);
     }
 

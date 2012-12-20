@@ -29,19 +29,21 @@ public class RVCClient {
     }
 
     public void connect() {
-        confirmConnection();
-        readVolumeFromServer();
+        if (waitForSocketConnection()) {
+            sendConnectPacket();
+            readVolumeFromServer();
+        }
     }
 
-    private void confirmConnection() {
+    private boolean waitForSocketConnection() {
         for (int i = 0; i < 100; i ++) {
             if (socket.isConnected()) {
-                sendConnectPacket();
-                break;
+                return true;
             } else {
                 sleepThread();
             }
         }
+        return false;
     }
 
     private void sendConnectPacket() {
