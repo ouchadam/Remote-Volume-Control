@@ -5,7 +5,7 @@ import android.content.Intent;
 
 public class RVCServiceFactory {
 
-    public static Intent stopPushService(Context context) {
+    public static Intent stopService(Context context) {
         return startService(context, "", 0);
     }
 

@@ -30,7 +30,7 @@ public class MessageHandler implements OnMessageReceived {
     }
 
     private void disconnectFromServer() {
-        context.stopService(RVCServiceFactory.stopPushService(context));
+        context.stopService(RVCServiceFactory.stopService(context));
     }
 
     private boolean isDisconnectMessage(String message) {

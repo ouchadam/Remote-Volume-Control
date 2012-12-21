@@ -42,7 +42,7 @@ public class MainActivity extends RVCActivity  {
     @Override
     protected void onPause() {
         super.onPause();
-        stopService(RVCServiceFactory.stopPushService(this));
+        stopService(RVCServiceFactory.stopService(this));
         unregisterReceiver();
     }
 
