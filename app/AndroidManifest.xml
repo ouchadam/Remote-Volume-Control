@@ -18,6 +18,7 @@
         </activity>
 
         <service android:name=".service.RVCBackgroundService" android:label="@string/service_name"/>
+        <service android:name=".service.ServerScannerService" android:label="@string/service_name"/>
 
     </application>
 

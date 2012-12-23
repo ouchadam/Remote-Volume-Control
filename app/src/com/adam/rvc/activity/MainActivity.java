@@ -31,7 +31,8 @@ public class MainActivity extends RVCActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        startService(RVCServiceFactory.startService(this, IP, PORT));
+//        startService(RVCServiceFactory.startService(this, IP, PORT));
+        startService(RVCServiceFactory.startServerScanner(this));
         registerReceiver();
     }
 

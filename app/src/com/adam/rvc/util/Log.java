@@ -2,7 +2,7 @@ package com.adam.rvc.util;
 
 public class Log {
 
-    private static final String TAG = "Tribble";
+    private static final String TAG = "RVC";
 
     public static void log(String message) {
         log(message, null);

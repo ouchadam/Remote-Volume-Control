@@ -23,4 +23,9 @@ public class RVCServiceFactory {
         pushServiceIntent.putExtra(RVCBackgroundService.EXTRA_WRITE_MESSAGE, message);
         return pushServiceIntent;
     }
+
+    public static Intent startServerScanner(Context context) {
+        Intent pushServiceIntent = new Intent(context, ServerScannerService.class);
+        return pushServiceIntent;
+    }
 }
