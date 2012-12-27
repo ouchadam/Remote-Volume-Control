@@ -1,6 +1,7 @@
 package com.adam.rvc.service;
 
 import com.adam.rvc.receiver.OnMessageReceived;
+import com.adam.rvc.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +34,10 @@ class RVCClient {
     }
 
     public void connect() {
+        Log.log("Connect method");
+
         if (attemptToVerifyConnection()) {
+            Log.log("Socket connected");
             sendConnectPacket();
             readFromServer();
         }
@@ -95,6 +99,7 @@ class RVCClient {
 
     public void writeToServer(String message) {
         if (socket.isConnected()) {
+            Log.log("Printing : " + message);
             output.println(message);
         }
     }

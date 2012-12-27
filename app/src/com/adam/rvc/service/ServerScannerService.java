@@ -18,7 +18,6 @@ public class ServerScannerService extends IntentService {
 
     private final StatusUpdater statusUpdater;
 
-
     private int port = 5555;
     private String iIPv4 = "192.168.0.";
     private boolean ipFound;
@@ -55,6 +54,9 @@ public class ServerScannerService extends IntentService {
                     Log.log("Server: " + fromServer);
                     if (fromServer.length() >= 4) {
                         out.println("exit");
+                        out.close();
+                        in.close();
+                        mySocket.close();
                         ipFound = true;
                         break;
                     }
@@ -64,9 +66,10 @@ public class ServerScannerService extends IntentService {
             }
             if (ipFound) {
                 statusUpdater.updateStatus("Server found at : " + iIPv4+i);
+                startService(RVCServiceFactory.startService(this, iIPv4+i, port));
                 return;
             }
         }
-        Log.log("No server found");
+        statusUpdater.updateStatusAndLog("No server found");
     }
 }
