@@ -1,7 +1,6 @@
 package com.rvc.server;
 
 import com.rvc.util.ConnectionTimeout;
-import com.rvc.util.Countdown;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,8 +14,8 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     private static final String UPDATE_SERVER_START = "Server start";
     private static final String UPDATE_WAITING_FOR_CLIENT = "Waiting for client";
     private static final String UPDATE_CLIENT_SOCKET_CONNECTED = "Client Socket Conn";
-    private static final String ERROR_COULD_NOT_CONNECT = "Could not connect / Socket closed whilst waiting";
     private static final String ERROR_IO_FAILED = "Error : IO failed";
+    private static final String ERROR_SERVER_SOCKET_IO_EXCEPTION = "couldn't connect : IOException || is the server already running?";
 
     private final ConnectionState connectionState;
 
@@ -38,17 +37,16 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
 
     public boolean startServer() throws IOException {
         updateStatus(UPDATE_SERVER_START);
+        initConnection();
+        new SocketReader(in, connectionState, this).join();
+        callback.onClientDisconnected();
+        closeConnection();
+        return isServerToBeRestarted();
+    }
+
+    private void initConnection() throws IOException {
         createSockets();
         createIO();
-        SocketReader readSocket = new SocketReader(in, connectionState, this);
-        new Countdown(this, connectionState);
-        readSocket.join();
-
-        callback.onClientDisconnected();
-        closeSockets();
-        closeIO();
-        System.out.println("Will server rerun : " + isServerToBeRestarted());
-        return isServerToBeRestarted();
     }
 
     private void createSockets() throws IOException {
@@ -65,7 +63,7 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            System.out.println("couldn't connect : IOException || is the server already running?");
+            System.out.println(ERROR_SERVER_SOCKET_IO_EXCEPTION);
             System.exit(1);
         }
         return serverSocket;
@@ -94,7 +92,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
 
     private BufferedReader createInput() throws IOException {
         return new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
     }
 
     @Override
@@ -109,7 +106,12 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         out.println(message);
     }
 
-    public void closeIO() {
+    private void closeConnection() {
+        closeIO();
+        closeSockets();
+    }
+
+    private void closeIO() {
         try {
             if (out != null && in != null) {
                 out.flush();
@@ -126,7 +128,7 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         }
     }
 
-    public void closeSockets() {
+    private void closeSockets() {
         try {
             if (serverSocket != null && clientSocket != null) {
                 serverSocket.close();
@@ -153,8 +155,7 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         }
         connectionState.setServerRunning(false);
         connectionState.setServerQuit(true);
-        closeSockets();
-        closeIO();
+        closeConnection();
     }
 
     private void sendDisconnectPacket() {
@@ -172,20 +173,19 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
 
     @Override
     public void onCountdown(int value) {
-        System.out.print('\r' + "TIMEOUT : " + value);
         updateStatus("Timeout : " + value);
     }
 
     @Override
     public void onConnectionTimedOut() {
-        System.out.println("\nClient Timed Out");
+        updateStatus("Client Timed Out");
         connectionState.setServerRunning(false);
+        connectionState.setClientConnected(false);
     }
 
     @Override
     public void onConnected() {
-        System.out.println("\nClient Connection Confirmed");
-        callback.onClientConnected();
         updateStatus("Client Connected");
+        callback.onClientConnected();
     }
 }

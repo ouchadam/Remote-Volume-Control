@@ -4,6 +4,9 @@ import com.rvc.server.ConnectionState;
 
 public class Countdown implements Runnable {
 
+    private static final int TOTAL_RETRY_ATTEMPTS = 10;
+    private static final int RETRY_SLEEP_IN_MS = 1000;
+
     private final ConnectionTimeout timeoutCallback;
     private final ConnectionState connectionState;
 
@@ -16,24 +19,36 @@ public class Countdown implements Runnable {
     @Override
     public void run() {
         try {
-            for (int i = 10; i > 0; i--) {
-                if (connectionState.isClientConnected()) {
-                    timeoutCallback.onConnected();
-                    break;
-                } else {
-                    timeoutCallback.onCountdown(i);
-                    Thread.sleep(1000);
-                }
+            if (!timeoutRetryLoop()) {
+                connectionTimedOut();
             }
-            if (connectionState.isServerRunning()) {
-
-                if (!connectionState.isClientConnected()) {
-                    timeoutCallback.onConnectionTimedOut();
-                }
-            }
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
+    private boolean timeoutRetryLoop() throws InterruptedException {
+        for (int i = TOTAL_RETRY_ATTEMPTS; i > 0; i--) {
+            if (!connectionState.isServerRunning()) {
+                return false;
+            }
+            if (connectionState.isClientConnected()) {
+                connectionConnected();
+                return true;
+            } else {
+                timeoutCallback.onCountdown(i);
+                Thread.sleep(RETRY_SLEEP_IN_MS);
+            }
+        }
+        return false;
+    }
+
+    private void connectionConnected() {
+        timeoutCallback.onConnected();
+    }
+
+    private void connectionTimedOut() {
+        timeoutCallback.onConnectionTimedOut();
+    }
+
 }

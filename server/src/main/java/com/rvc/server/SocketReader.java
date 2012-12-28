@@ -1,5 +1,6 @@
 package com.rvc.server;
 
+import com.rvc.util.ConnectionTimeout;
 import com.rvc.util.ExceptionLogger;
 
 import java.io.BufferedReader;
@@ -8,24 +9,28 @@ import java.net.SocketException;
 
 class SocketReader implements Runnable {
 
+    private static final String SERVER_EXIT = "1";
+
     private final Thread readClientResponse;
     private final BufferedReader in;
     private final ConnectionState connectionState;
     private final ReceiverCallback receiverCallback;
+    private final ConnectionTimeout timeoutCallback;
 
     private String message;
 
-    public SocketReader(BufferedReader in, ConnectionState connectionState, ReceiverCallback receiverCallback) {
+    public SocketReader(BufferedReader in, ConnectionState connectionState, Server serverCallbacks) {
         this.in = in;
         this.connectionState = connectionState;
-        this.receiverCallback = receiverCallback;
+        this.receiverCallback = serverCallbacks;
+        this.timeoutCallback = serverCallbacks;
         readClientResponse = new Thread(this);
         readClientResponse.start();
     }
 
     @Override
     public void run() {
-
+//        new Countdown(timeoutCallback, connectionState);
         Protocol protocol = new Protocol(connectionState);
 
         while (connectionState.isServerRunning()) {
@@ -46,7 +51,7 @@ class SocketReader implements Runnable {
                 }
             }
 
-            if (message.substring(0, 1).equals("1")) {
+            if (message.substring(0, 1).equals(SERVER_EXIT)) {
                 connectionState.setServerRunning(false);
             }
         }

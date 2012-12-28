@@ -1,7 +1,10 @@
 package com.adam.rvc.service;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import com.adam.rvc.util.Log;
 import com.adam.rvc.util.StatusUpdater;
 
@@ -16,11 +19,14 @@ import java.net.UnknownHostException;
 
 public class ServerScannerService extends IntentService {
 
+    private static final int IP_RANGE = 254;
+    private static final int SOCKET_CONNECTION_TIMEOUT = 15;
     private final StatusUpdater statusUpdater;
 
     private int port = 5555;
-    private String iIPv4 = "192.168.0.";
-    private boolean ipFound;
+    private PrintWriter out;
+    private BufferedReader in;
+    private Socket serverScanSocket;
 
     public ServerScannerService() {
         this("ServerScannerService");
@@ -37,39 +43,76 @@ public class ServerScannerService extends IntentService {
     }
 
     private void findServer() {
-        for (int i = 1; i < 254; i++) {
+        String subnet = getLocalSubnet();
+        for (int i = 1; i < IP_RANGE; i++) {
+            String ip = subnet + i;
+            Log.log(ip);
             try {
-                Log.log(iIPv4 + i);
-                Socket mySocket = new Socket();
-                SocketAddress address = new InetSocketAddress(iIPv4 + i, port);
-
-                mySocket.connect(address, 15);
-
-                PrintWriter out = new PrintWriter(mySocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
-                out.println("conn");
+                serverScanSocket = connectToIp(new Socket(), ip);
+                initIO();
                 out.println("check");
-                String fromServer;
-                while ((fromServer = in.readLine()) != null) {
-                    Log.log("Server: " + fromServer);
-                    if (fromServer.length() >= 4) {
-                        out.println("exit");
-                        out.close();
-                        in.close();
-                        mySocket.close();
-                        ipFound = true;
-                        break;
-                    }
+                if (serverResponse(ip)) {
+                    closeConnection();
+                    return;
                 }
+                closeConnection();
             } catch (UnknownHostException e) {
             } catch (IOException e) {
             }
-            if (ipFound) {
-                statusUpdater.updateStatus("Server found at : " + iIPv4+i);
-                startService(RVCServiceFactory.startService(this, iIPv4+i, port));
-                return;
-            }
+
+
         }
         statusUpdater.updateStatusAndLog("No server found");
+    }
+
+    private String getLocalSubnet() {
+        DhcpInfo networkInfo = ((WifiManager) getSystemService(Context.WIFI_SERVICE)).getDhcpInfo();
+        String fullIp = intToIp(networkInfo.ipAddress);
+        return fullIp.substring(0, fullIp.lastIndexOf(".") + 1);
+    }
+
+    private String intToIp(int addr) {
+        return  ((addr & 0xFF) + "." +
+                ((addr >>>= 8) & 0xFF) + "." +
+                ((addr >>>= 8) & 0xFF) + "." +
+                ((addr >>>= 8) & 0xFF));
+    }
+
+    private Socket connectToIp(Socket socket, String ip) throws IOException {
+        socket.connect(createSocketAddress(port, ip), SOCKET_CONNECTION_TIMEOUT);
+        return socket;
+    }
+
+    private SocketAddress createSocketAddress(int port, String ip) {
+        return new InetSocketAddress(ip, port);
+    }
+
+    private void initIO() throws IOException {
+        out = new PrintWriter(serverScanSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(serverScanSocket.getInputStream()));
+    }
+
+    private boolean serverResponse(String ip) throws IOException {
+        String fromServer;
+        while ((fromServer = in.readLine()) != null) {
+            Log.log("Server: " + fromServer);
+            if (fromServer.length() >= 4) {
+                onIpFound(ip);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void onIpFound(String ip) {
+        out.println("exit");
+        statusUpdater.updateStatus("Server found at : " + ip);
+//        startService(RVCServiceFactory.startService(this, ip, port));
+    }
+
+    private void closeConnection() throws IOException {
+        out.close();
+        in.close();
+        serverScanSocket.close();
     }
 }
