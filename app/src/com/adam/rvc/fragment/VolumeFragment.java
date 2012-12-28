@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import com.adam.rvc.R;
-import com.adam.rvc.listener.SeekBarListener;
+import com.adam.rvc.listener.volume.SeekBarListener;
 
 public class VolumeFragment extends Fragment {
 

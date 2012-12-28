@@ -5,8 +5,6 @@ public class ConnectionState {
     private boolean serverQuit;
     private boolean clientConnected;
     private boolean serverRunning;
-    private boolean socketsOpened;
-    private boolean ioOpened;
 
     public void setClientConnected(boolean clientConnected) {
         this.clientConnected = clientConnected;
@@ -32,19 +30,4 @@ public class ConnectionState {
         return serverQuit;
     }
 
-    public boolean isSocketsOpened() {
-        return socketsOpened;
-    }
-
-    public void setSocketsOpened(boolean state) {
-        socketsOpened = state;
-    }
-
-    public boolean isIoOpened() {
-        return ioOpened;
-    }
-
-    public void setIoOpened(boolean ioOpened) {
-        this.ioOpened = ioOpened;
-    }
 }

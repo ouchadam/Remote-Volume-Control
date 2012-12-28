@@ -38,7 +38,7 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     public boolean startServer() throws IOException {
         updateStatus(UPDATE_SERVER_START);
         initConnection();
-        new SocketReader(in, connectionState, this).join();
+        new SocketReader(in, connectionState, this).start().join();
         callback.onClientDisconnected();
         closeConnection();
         return isServerToBeRestarted();
@@ -73,7 +73,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         updateStatus(UPDATE_WAITING_FOR_CLIENT);
         clientSocket = serverSocket.accept();
         updateStatus(UPDATE_CLIENT_SOCKET_CONNECTED);
-        connectionState.setSocketsOpened(true);
         connectionState.setServerRunning(true);
         return clientSocket;
     }
@@ -117,7 +116,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
                 out.flush();
                 out.close();
                 in.close();
-                connectionState.setIoOpened(false);
                 System.out.println("IO closed");
             } else {
                 out = null;
@@ -134,7 +132,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
                 serverSocket.close();
                 clientSocket.close();
                 System.out.println("Sockets closed");
-                connectionState.setSocketsOpened(false);
             } else {
                 serverSocket.close();
             }

@@ -121,7 +121,7 @@ public class ServerGui extends JFrame implements ServerCallbacks {
 
     private void updateGui() {
         osName.setText("OS : " + System.getProperty("os.name"));
-        internalIp.setText("Lan Address : " + serverSettings.getInteralIp());
+        internalIp.setText("Lan Address : " + serverSettings.getInternalIp());
         externalIp.setText("External Address : " + serverSettings.getExternalIp());
         macAddress.setText("Mac Address : " + serverSettings.getMacAddress());
         port.setText("Port : " + serverSettings.getPort());

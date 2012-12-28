@@ -1,4 +1,4 @@
-package com.adam.rvc.listener;
+package com.adam.rvc.listener.volume;
 
 import android.content.Context;
 import com.adam.rvc.service.RVCServiceFactory;

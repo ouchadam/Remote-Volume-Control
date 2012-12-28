@@ -1,4 +1,4 @@
-package com.adam.rvc.listener;
+package com.adam.rvc.listener.volume;
 
 import android.content.Context;
 import android.widget.SeekBar;

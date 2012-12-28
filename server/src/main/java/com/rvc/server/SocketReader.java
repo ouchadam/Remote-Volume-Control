@@ -25,7 +25,11 @@ class SocketReader implements Runnable {
         this.receiverCallback = serverCallbacks;
         this.timeoutCallback = serverCallbacks;
         readClientResponse = new Thread(this);
+    }
+
+    public SocketReader start() {
         readClientResponse.start();
+        return this;
     }
 
     @Override
@@ -34,20 +38,18 @@ class SocketReader implements Runnable {
         Protocol protocol = new Protocol(connectionState);
 
         while (connectionState.isServerRunning()) {
-            if (connectionState.isSocketsOpened()) {
-                try {
-                    String rawMessage = in.readLine();
-                    if (rawMessage != null) {
-                        message = protocol.processInput(rawMessage);
-                        receiverCallback.onReceiveMessage(message);
-                    }
-                } catch (IOException e) {
-                    if (e instanceof SocketException) {
-                        connectionState.setServerRunning(false);
-                    } else {
-                        ExceptionLogger.saveException(e);
-                        connectionState.setServerRunning(false);
-                    }
+            try {
+                String rawMessage = in.readLine();
+                if (rawMessage != null) {
+                    message = protocol.processInput(rawMessage);
+                    receiverCallback.onReceiveMessage(message);
+                }
+            } catch (IOException e) {
+                if (e instanceof SocketException) {
+                    connectionState.setServerRunning(false);
+                } else {
+                    ExceptionLogger.saveException(e);
+                    connectionState.setServerRunning(false);
                 }
             }
 

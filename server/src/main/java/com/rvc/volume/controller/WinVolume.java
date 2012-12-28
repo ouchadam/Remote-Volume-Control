@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 class WinVolume implements VolumeController {
 
     private static final int DEFAULT_VOLUME = 50;
-    private static final int COMMAND = 3;
+    private static final int COMMAND_LENGTH = 3;
 
     private int volume;
 
@@ -54,13 +54,13 @@ class WinVolume implements VolumeController {
 
     private String[] createGetVolumeCmd() {
         String[] cmd = createBaseCmd();
-        cmd[COMMAND] = "vol";
+        cmd[COMMAND_LENGTH] = "vol";
         return cmd;
     }
 
     private String[] createSetVolumeCmd(float volume) {
         String[] cmd = createBaseCmd();
-        cmd[COMMAND] = Float.toString(volume);
+        cmd[COMMAND_LENGTH] = Float.toString(volume);
         return cmd;
     }
 

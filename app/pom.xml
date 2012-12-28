@@ -30,6 +30,12 @@
       <type>apklib</type>
     </dependency>
 
+      <dependency>
+          <groupId>javax.jmdns</groupId>
+          <artifactId>jmdns</artifactId>
+          <version>3.4.1</version>
+      </dependency>
+
   </dependencies>
 
   <build>
