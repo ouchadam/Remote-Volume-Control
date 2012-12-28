@@ -12,6 +12,7 @@ class Protocol {
     private static final String SHUTDOWN = "sdown";
     private static final String EXIT = "exit";
     private static final String VOLUME = "vol";
+    private static final String SCAN_EXIT = "scan_exit";
 
     private final ConnectionState server;
     private final VolumeController volumeController;
@@ -33,9 +34,17 @@ class Protocol {
     	
     	if (server.isClientConnected()) {
             handleMessage(input);
-    	}
+    	} else {
+            handleUnconnectedMessage(input);
+        }
             
         return exitCode + getServerState() + vol;
+    }
+
+    private void handleUnconnectedMessage(String input) {
+        if (input.equals(SCAN_EXIT)) {
+            exitCode = "1";
+        }
     }
 
     private void handleMessage(String input) {

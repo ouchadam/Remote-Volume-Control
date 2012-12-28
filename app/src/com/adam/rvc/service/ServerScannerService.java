@@ -105,7 +105,7 @@ public class ServerScannerService extends IntentService {
     }
 
     private void onIpFound(String ip) {
-        out.println("exit");
+        out.println("scan_exit");
         statusUpdater.updateStatus("Server found at : " + ip);
 //        startService(RVCServiceFactory.startService(this, ip, port));
     }
