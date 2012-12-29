@@ -11,6 +11,6 @@
     <fragment
         android:id="@+id/volume_fragment"
         style="@style/MatchWidth"
-        android:name="com.adam.rvc.fragment.VolumeFragment"/>
+        android:name="com.adam.rvc.fragment.IPDiscoveryFragment"/>
 
 </LinearLayout>

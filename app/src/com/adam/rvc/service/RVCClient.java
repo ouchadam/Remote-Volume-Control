@@ -34,10 +34,7 @@ class RVCClient {
     }
 
     public void connect() {
-        Log.log("Connect method");
-
         if (attemptToVerifyConnection()) {
-            Log.log("Socket connected");
             sendConnectPacket();
             readFromServer();
         }

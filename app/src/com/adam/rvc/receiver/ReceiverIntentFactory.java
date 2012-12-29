@@ -1,6 +1,7 @@
 package com.adam.rvc.receiver;
 
 import android.content.Intent;
+import com.adam.rvc.server.ServerData;
 import com.adam.rvc.util.MessageHandler;
 import com.adam.rvc.util.StatusUpdater;
 
@@ -17,6 +18,13 @@ public class ReceiverIntentFactory {
         Intent intent = new Intent();
         intent.setAction(StatusUpdater.ACTION_STATUS_MESSAGE);
         intent.putExtra(StatusUpdater.EXTRA_MESSAGE, message);
+        return intent;
+    }
+
+    public static Intent broadcastServerData(ServerData serverData) {
+        Intent intent = new Intent();
+        intent.setAction(IPReceiver.ACTION);
+        intent.putExtra("data", serverData);
         return intent;
     }
 }
