@@ -1,5 +1,7 @@
 package com.rvc.gui;
 
+import com.rvc.gui.tray.TrayExit;
+import com.rvc.gui.tray.TrayExitCallback;
 import com.rvc.server.Server;
 import com.rvc.server.ServerCallbacks;
 import com.rvc.server.ServerSettings;
@@ -13,73 +15,56 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 
-public class ServerGui extends JFrame implements ServerCallbacks {
+public class ServerGui extends JFrame implements ServerCallbacks, TrayExitCallback {
 
-    private final JLabel status = new JLabel();
-    private final JLabel error = new JLabel("Error : nothing so far...");
-    private final ServerSettings serverSettings;
+    private static final String FRAME_LABEL = "RVC Server";
+
+    private final LabelManager labelManager;
 
     private JFrame frame;
     private TrayIcon trayIcon;
-    private JLabel osName, internalIp, externalIp, macAddress, port;
     private Server server;
 
     public ServerGui(ServerSettings serverSettings) {
-        this.serverSettings = serverSettings;
+        labelManager = new LabelManager(serverSettings);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
-                updateGui();
                 onServerExit();
             }
         });
     }
 
-    public void setServer(Server server) {
+    public void attachServer(Server server) {
         this.server = server;
         server.setCallback(this);
     }
 
     private void createAndShowGUI() {
-        final PopupMenu popup = new PopupMenu();
-        trayIcon = new TrayIcon(createImage("tray.png", "tray icon"));
-        SystemTray tray = SystemTray.getSystemTray();
+        initFrame();
+        initTray();
+    }
 
-        MenuItem exitItem = new MenuItem("Exit");
-
-        final JPanel panel = new JPanel();
-
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
-        frame = new JFrame("RVC Server");
-
-        osName = new JLabel("");
-        internalIp = new JLabel("");
-        externalIp = new JLabel("");
-        macAddress = new JLabel("");
-        port = new JLabel("");
-
+    private void initFrame() {
+        frame = new JFrame(FRAME_LABEL);
         frame.setBounds(100, 100, 250, 150);
-        panel.add(osName);
-        panel.add(internalIp);
-        panel.add(externalIp);
-        panel.add(macAddress);
-        panel.add(port);
-        panel.add(status);
-        panel.add(error);
-
-        frame.add(panel);
+        frame.add(createPanel());
         frame.setVisible(true);
+    }
 
-        popup.add(exitItem);
+    private void initTray() {
+        TrayExit trayExit = new TrayExit(this);
+        PopupMenu popup = new PopupMenu();
+        popup.add(trayExit.getExitItem());
 
+        trayIcon = new TrayIcon(createImage("tray.png", "tray icon"));
         trayIcon.setPopupMenu(popup);
 
         try {
+            SystemTray tray = SystemTray.getSystemTray();
             tray.add(trayIcon);
         } catch (AWTException e) {
             System.out.println("TrayIcon could not be added.");
-            return;
         }
 
         trayIcon.addActionListener(new ActionListener() {
@@ -87,20 +72,13 @@ public class ServerGui extends JFrame implements ServerCallbacks {
                 frame.setVisible(true);
             }
         });
+    }
 
-        ActionListener listener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                MenuItem item = (MenuItem) e.getSource();
-                System.out.println(item.getLabel());
-                if ("Update".equals(item.getLabel())) {
-                    updateGui();
-                } else if ("Exit".equals(item.getLabel())) {
-                    serverExit();
-                }
-            }
-        };
-
-        exitItem.addActionListener(listener);
+    private JPanel createPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        labelManager.addAllLabels(panel);
+        return panel;
     }
 
     private void serverExit() {
@@ -119,14 +97,6 @@ public class ServerGui extends JFrame implements ServerCallbacks {
         }
     }
 
-    private void updateGui() {
-        osName.setText("OS : " + System.getProperty("os.name"));
-        internalIp.setText("Lan Address : " + serverSettings.getInternalIp());
-        externalIp.setText("External Address : " + serverSettings.getExternalIp());
-        macAddress.setText("Mac Address : " + serverSettings.getMacAddress());
-        port.setText("Port : " + serverSettings.getPort());
-    }
-
     private void onServerExit() {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -137,12 +107,12 @@ public class ServerGui extends JFrame implements ServerCallbacks {
 
     @Override
     public void onStatusUpdate(String update) {
-        status.setText(update);
+        labelManager.setStatusText(update);
     }
 
     @Override
     public void onErrorUpdate(String update) {
-        error.setText(update);
+        labelManager.setErrorText(update);
     }
 
     @Override
@@ -162,5 +132,10 @@ public class ServerGui extends JFrame implements ServerCallbacks {
     public void finish() {
         server = null;
         dispose();
+    }
+
+    @Override
+    public void onTrayExit() {
+        serverExit();
     }
 }

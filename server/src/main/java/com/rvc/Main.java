@@ -53,7 +53,7 @@ public class Main {
     private void serverLoop() throws IOException {
         do {
             initServer();
-            serverGui.setServer(server);
+            serverGui.attachServer(server);
         } while(server.startServer());
     }
 
