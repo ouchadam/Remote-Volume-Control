@@ -9,8 +9,13 @@
         android:name="com.adam.rvc.fragment.StatusFragment"/>
 
     <fragment
+        android:id="@+id/server_discovery_fragment"
+        style="@style/MatchWidth"
+        android:name="com.adam.rvc.fragment.ServerDiscoveryFragment"/>
+
+    <fragment
         android:id="@+id/volume_fragment"
         style="@style/MatchWidth"
-        android:name="com.adam.rvc.fragment.IPDiscoveryFragment"/>
+        android:name="com.adam.rvc.fragment.VolumeFragment"/>
 
 </LinearLayout>

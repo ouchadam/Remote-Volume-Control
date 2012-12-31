@@ -52,4 +52,5 @@ public class ServerData implements Parcelable {
         parcel.writeString(ipAddress);
         parcel.writeInt(port);
     }
+
 }

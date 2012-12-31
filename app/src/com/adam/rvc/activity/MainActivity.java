@@ -8,9 +8,6 @@ import com.adam.rvc.util.MessageHandler;
 
 public class MainActivity extends RVCActivity  {
 
-    private static final String IP = "192.168.0.7";
-    private static final int  PORT = 5555;
-
     private final ServerMessageReceiver messageReceiver;
 
     public MainActivity() {
@@ -31,7 +28,6 @@ public class MainActivity extends RVCActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-//        startService(RVCServiceFactory.startService(this, IP, PORT));
         startService(RVCServiceFactory.startServerScanner(this));
         registerReceiver();
     }

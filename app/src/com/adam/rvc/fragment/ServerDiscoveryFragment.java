@@ -6,33 +6,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.adam.rvc.R;
-import com.adam.rvc.receiver.IPReceiver;
-import com.adam.rvc.receiver.OnIpReceived;
+import com.adam.rvc.receiver.OnServerReceived;
+import com.adam.rvc.receiver.ServerReceiver;
 import com.adam.rvc.server.ServerData;
-import com.adam.rvc.util.Log;
+import com.adam.rvc.service.RVCServiceFactory;
 
-public class IPDiscoveryFragment extends BaseFragment implements OnIpReceived {
+public class ServerDiscoveryFragment extends BaseFragment implements OnServerReceived {
 
-    private final IPReceiver ipReceiver;
+    private final ServerReceiver serverReceiver;
 
     private TextView serverName;
     private TextView ipAddress;
     private TextView port;
 
-    public IPDiscoveryFragment() {
-        ipReceiver = new IPReceiver(this);
+    public ServerDiscoveryFragment() {
+        serverReceiver = new ServerReceiver(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        context.registerReceiver(ipReceiver, ipReceiver.getIntentFilter());
+        context.registerReceiver(serverReceiver, serverReceiver.getIntentFilter());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        context.unregisterReceiver(ipReceiver);
+        context.unregisterReceiver(serverReceiver);
     }
 
     @Override
@@ -50,6 +50,11 @@ public class IPDiscoveryFragment extends BaseFragment implements OnIpReceived {
 
     @Override
     public void onIpReceived(ServerData serverData) {
+        setServerDataText(serverData);
+        context.startService(RVCServiceFactory.startService(context, serverData.getIpAddress(), serverData.getPort()));
+    }
+
+    private void setServerDataText(ServerData serverData) {
         serverName.setText(serverData.getServerName());
         ipAddress.setText(serverData.getIpAddress());
         port.setText("" + serverData.getPort());

@@ -3,6 +3,7 @@ package com.adam.rvc.receiver;
 import android.content.Intent;
 import com.adam.rvc.server.ServerData;
 import com.adam.rvc.util.MessageHandler;
+import com.adam.rvc.util.ServerDiscoverer;
 import com.adam.rvc.util.StatusUpdater;
 
 public class ReceiverIntentFactory {
@@ -23,8 +24,8 @@ public class ReceiverIntentFactory {
 
     public static Intent broadcastServerData(ServerData serverData) {
         Intent intent = new Intent();
-        intent.setAction(IPReceiver.ACTION);
-        intent.putExtra("data", serverData);
+        intent.setAction(ServerDiscoverer.ACTION_SERVER_DATA_RECEIVED);
+        intent.putExtra(ServerDiscoverer.EXTRA_SERVER_DATA, serverData);
         return intent;
     }
 }

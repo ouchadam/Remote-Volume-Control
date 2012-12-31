@@ -11,7 +11,6 @@ public class DiscoveryListener implements ServiceListener {
     private final DiscoveryCallback callback;
 
     public DiscoveryListener(StatusUpdater statusUpdater, DiscoveryCallback callback) {
-
         this.statusUpdater = statusUpdater;
         this.callback = callback;
     }
@@ -29,14 +28,15 @@ public class DiscoveryListener implements ServiceListener {
 
     @Override
     public void serviceResolved(ServiceEvent serviceEvent) {
-        callback.finish(serviceEvent);
+        statusUpdater.updateStatusAndLog("Service resolved");
+        callback.onServerDataReceived(serviceEvent);
     }
 
     public interface DiscoveryCallback {
 
         void resolve(ServiceEvent serviceEvent);
 
-        void finish(ServiceEvent serviceEvent);
+        void onServerDataReceived(ServiceEvent serviceEvent);
 
     }
 }

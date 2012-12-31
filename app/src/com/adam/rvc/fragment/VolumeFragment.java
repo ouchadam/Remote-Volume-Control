@@ -1,9 +1,6 @@
 package com.adam.rvc.fragment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +8,9 @@ import android.widget.SeekBar;
 import com.adam.rvc.R;
 import com.adam.rvc.listener.volume.SeekBarListener;
 
-public class VolumeFragment extends Fragment {
+public class VolumeFragment extends BaseFragment {
 
-    private Context context;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        context = activity;
-    }
+    private static final int SEEK_BAR_MAX = 100;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,7 +21,7 @@ public class VolumeFragment extends Fragment {
 
     private void initSeekBar(View view) {
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.volume_seek_bar);
-        seekBar.setMax(100);
+        seekBar.setMax(SEEK_BAR_MAX);
         seekBar.setOnSeekBarChangeListener(new SeekBarListener(context));
     }
 }
