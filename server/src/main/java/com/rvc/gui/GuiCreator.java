@@ -19,6 +19,7 @@ public class GuiCreator {
     private final LabelManager labelManager;
     private final JFrame frame;
     private final TrayExitCallback trayExitCallback;
+
     private TrayIcon trayIcon;
 
     public GuiCreator(LabelManager labelManager, TrayExitCallback trayExitCallback) {
