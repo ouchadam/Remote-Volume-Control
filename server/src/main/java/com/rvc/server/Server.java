@@ -1,5 +1,6 @@
 package com.rvc.server;
 
+import com.rvc.ServerController;
 import com.rvc.util.ConnectionTimeout;
 
 import java.io.BufferedReader;
@@ -146,7 +147,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     }
 
     public void quit() {
-        System.out.println("Quit method");
         if (out != null) {
             sendDisconnectPacket();
         }

@@ -1,13 +1,16 @@
 package com.rvc;
 
-import com.rvc.gui.ServerGui;
+import com.rvc.gui.main.ServerGui;
 import com.rvc.server.Server;
 import com.rvc.server.ServerSettings;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
-public class Main {
+public class Main implements ServerController {
+
+    private static Main instance;
+
+    private final ServerController serverController = this;
 
     private Server server;
     private ServerSettings serverSettings;
@@ -15,30 +18,43 @@ public class Main {
     private Discovery discovery;
 
     public static void main(String args[]) {
-        Main instance = new Main();
-
+        instance = new Main();
         instance.initServerSettings();
         instance.initGui();
-        instance.startDiscovery();
-        try {
-            instance.serverLoop();
-        } catch (IOException e) {
-            // Server was closed whilst waiting for a connection
-        }
-        instance.finish();
     }
 
     private void initServerSettings() {
-        try {
-            serverSettings = new ServerSettings();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            // this should never happen
-        }
+        serverSettings = new ServerSettings();
     }
 
     private void initGui() {
-        serverGui = new ServerGui(serverSettings);
+        serverGui = new ServerGui(serverSettings, serverController);
+    }
+
+    private void initServer() {
+        server = new Server(serverSettings);
+    }
+
+    @Override
+    public void startServer() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    instance.serverLoop();
+                } catch (IOException e) {
+                    // Server was closed whilst waiting for a connection
+                }
+            }
+        }).start();
+    }
+
+    private void serverLoop() throws IOException {
+        instance.startDiscovery();
+        do {
+            initServer();
+            serverGui.attachServer(server);
+        } while (server.startServer());
     }
 
     private void startDiscovery() {
@@ -50,20 +66,16 @@ public class Main {
         }
     }
 
-    private void serverLoop() throws IOException {
-        do {
-            initServer();
-            serverGui.attachServer(server);
-        } while(server.startServer());
-    }
-
-    private void initServer() {
-        server = new Server(serverSettings);
+    @Override
+    public void stopServer() {
+        instance.finish();
     }
 
     private void finish() {
-        discovery.unregister();
-        serverGui.finish();
+        if (discovery != null && serverGui != null) {
+            discovery.unregister();
+            serverGui.finish();
+        }
         System.exit(0);
     }
 

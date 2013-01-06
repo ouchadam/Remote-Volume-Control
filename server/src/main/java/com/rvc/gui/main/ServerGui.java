@@ -1,5 +1,6 @@
-package com.rvc.gui;
+package com.rvc.gui.main;
 
+import com.rvc.ServerController;
 import com.rvc.gui.tray.TrayExitCallback;
 import com.rvc.server.Server;
 import com.rvc.server.ServerCallbacks;
@@ -7,14 +8,20 @@ import com.rvc.server.ServerSettings;
 
 import javax.swing.*;
 
-public class ServerGui extends JFrame implements ServerCallbacks, TrayExitCallback {
+public class ServerGui implements ServerCallbacks, TrayExitCallback {
 
     private final GuiCreator guiCreator;
+    private final ServerController serverController;
 
     private Server server;
 
-    public ServerGui(ServerSettings serverSettings) {
-        guiCreator = new GuiCreator(new LabelManager(serverSettings), this);
+    public ServerGui(ServerSettings serverSettings, ServerController serverController) {
+        guiCreator = new GuiCreator(new LabelManager(serverSettings), this, serverController);
+        this.serverController = serverController;
+        createGui();
+    }
+
+    private void createGui() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 guiCreator.create();
@@ -29,7 +36,10 @@ public class ServerGui extends JFrame implements ServerCallbacks, TrayExitCallba
 
     private void serverExit() {
         System.out.println("Server Quitting");
-        server.quit();
+        if (server != null) {
+            server.quit();
+        }
+        serverController.stopServer();
     }
 
     @Override
@@ -54,7 +64,6 @@ public class ServerGui extends JFrame implements ServerCallbacks, TrayExitCallba
 
     public void finish() {
         server = null;
-        dispose();
     }
 
     @Override

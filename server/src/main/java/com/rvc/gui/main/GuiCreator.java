@@ -1,7 +1,10 @@
-package com.rvc.gui;
+package com.rvc.gui.main;
 
+import com.rvc.ServerController;
+import com.rvc.gui.ComboListener;
 import com.rvc.gui.tray.TrayExit;
 import com.rvc.gui.tray.TrayExitCallback;
+import com.rvc.util.IPHelper;
 import com.sun.javaws.Main;
 
 import javax.swing.*;
@@ -12,20 +15,22 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 
-public class GuiCreator {
+public class GuiCreator extends JFrame implements ComboListener.ComboCallback {
 
     private static final String FRAME_LABEL = "RVC Server";
 
     private final LabelManager labelManager;
-    private final JFrame frame;
     private final TrayExitCallback trayExitCallback;
+    private final ServerController serverController;
 
     private TrayIcon trayIcon;
+    private JPanel panel;
+    private JComboBox<String> comboBox;
 
-    public GuiCreator(LabelManager labelManager, TrayExitCallback trayExitCallback) {
+    public GuiCreator(LabelManager labelManager, TrayExitCallback trayExitCallback, ServerController serverController) {
         this.labelManager = labelManager;
         this.trayExitCallback = trayExitCallback;
-        frame = new JFrame(FRAME_LABEL);
+        this.serverController = serverController;
     }
 
     public void create() {
@@ -35,9 +40,10 @@ public class GuiCreator {
     }
 
     private void initFrame() {
-        frame.setBounds(100, 100, 250, 150);
-        frame.add(createPanel());
-        frame.setVisible(true);
+        setTitle(FRAME_LABEL);
+        setBounds(100, 100, 250, 150);
+        add(createInitPanel());
+        setVisible(true);
     }
 
     private void initTray() {
@@ -66,16 +72,59 @@ public class GuiCreator {
     private void addTrayOnDoubleClickAction() {
         trayIcon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(true);
+                setVisible(true);
             }
         });
     }
 
-    private JPanel createPanel() {
-        JPanel panel = new JPanel();
+    private JPanel createInitPanel() {
+        panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.add(createComboBox());
+        panel.add(createStartServerButton());
+        return panel;
+    }
+
+    private Button createStartServerButton() {
+        Button button = new Button();
+        button.setLabel("Start Server!");
+        button.addActionListener(buttonAction);
+        return button;
+    }
+
+    ActionListener buttonAction = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            startServer();
+        }
+    };
+
+    private void startServer() {
+        showServerSettings();
+        serverController.startServer();
+    }
+
+    private void showServerSettings() {
+        remove(panel);
+        add(createMainPanel());
+        invalidate();
+        validate();
+    }
+
+    private JPanel createMainPanel() {
+        panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        labelManager.update(comboBox.getItemAt(comboBox.getSelectedIndex()));
         labelManager.addAllLabels(panel);
         return panel;
+    }
+
+    private JComboBox<String> createComboBox() {
+        comboBox = new JComboBox<String>();
+        for (String name : IPHelper.getAdapters()) {
+            comboBox.addItem(name);
+        }
+        return comboBox;
     }
 
     private Image createImage(String fileName, String description) {
@@ -90,9 +139,9 @@ public class GuiCreator {
     }
 
     private void initGuiExitAction() {
-        frame.addWindowListener(new WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                frame.setVisible(false);
+                setVisible(false);
             }
         });
     }
@@ -115,6 +164,11 @@ public class GuiCreator {
 
     public void updateError(String update) {
         labelManager.setErrorText(update);
+    }
+
+    @Override
+    public void onSelectionChanged(int index) {
+        System.out.println("Combo : " + index);
     }
 
 }

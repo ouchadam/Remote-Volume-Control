@@ -5,16 +5,15 @@ import com.rvc.util.IPHelper;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 
 public class ServerSettings {
 
-    private final String macAddress;
-    private final String externalIp;
-    private final InetAddress internalAddress;
+    private String macAddress = "";
+    private String externalIp = "";
+    private InetAddress internalAddress;
 
-    public ServerSettings() throws UnknownHostException {
-        internalAddress = IPHelper.getLocalIp();
+    public void updateIps(String interfaceName) {
+        internalAddress = IPHelper.getLocalIp(interfaceName);
         macAddress = parseMacAddress();
         externalIp = retrieveExternalIp();
     }
@@ -64,4 +63,5 @@ public class ServerSettings {
     public InetAddress getInternalInet() {
         return internalAddress;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.rvc.gui;
+package com.rvc.gui.main;
 
 import com.rvc.server.ServerSettings;
 
@@ -18,32 +18,16 @@ public class LabelManager {
     public LabelManager(ServerSettings serverSettings) {
         this.serverSettings = serverSettings;
         osName = new JLabel(getOsNameLabel());
-        internalIp = new JLabel(getInternalLabel());
-        externalIp = new JLabel(getExternalLabel());
-        macAddress = new JLabel(getMacAddressLabel());
-        port = new JLabel(getPortLabel());
+        internalIp = new JLabel();
+        externalIp = new JLabel();
+        macAddress = new JLabel();
+        port = new JLabel();
         status = new JLabel("Initialising server...");
         error = new JLabel();
     }
 
     private String getOsNameLabel() {
         return "OS : " + System.getProperty("os.name");
-    }
-
-    private String getInternalLabel() {
-        return "Internal Address : " + serverSettings.getInternalIp();
-    }
-
-    private String getExternalLabel() {
-        return "External Address : " + serverSettings.getExternalIp();
-    }
-
-    private String getMacAddressLabel() {
-        return "Mac Address : " + serverSettings.getMacAddress();
-    }
-
-    private String getPortLabel() {
-        return "Port : " + serverSettings.getPort();
     }
 
     public void addAllLabels(JPanel panel) {
@@ -73,4 +57,29 @@ public class LabelManager {
             }
         });
     }
+
+    public void update(String interfaceName) {
+        serverSettings.updateIps(interfaceName);
+        internalIp.setText(getInternalLabel());
+        externalIp.setText(getExternalLabel());
+        macAddress.setText(getMacAddressLabel());
+        port.setText(getPortLabel());
+    }
+
+    private String getInternalLabel() {
+        return "Internal Address : " + serverSettings.getInternalIp();
+    }
+
+    private String getExternalLabel() {
+        return "External Address : " + serverSettings.getExternalIp();
+    }
+
+    private String getMacAddressLabel() {
+        return "Mac Address : " + serverSettings.getMacAddress();
+    }
+
+    private String getPortLabel() {
+        return "Port : " + serverSettings.getPort();
+    }
+
 }
