@@ -25,7 +25,7 @@ public class GuiCreator extends JFrame implements ComboListener.ComboCallback {
 
     private TrayIcon trayIcon;
     private JPanel panel;
-    private JComboBox<String> comboBox;
+    private JComboBox comboBox;
 
     public GuiCreator(LabelManager labelManager, TrayExitCallback trayExitCallback, ServerController serverController) {
         this.labelManager = labelManager;
@@ -114,13 +114,13 @@ public class GuiCreator extends JFrame implements ComboListener.ComboCallback {
     private JPanel createMainPanel() {
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        labelManager.update(comboBox.getItemAt(comboBox.getSelectedIndex()));
+        labelManager.update((String)comboBox.getItemAt(comboBox.getSelectedIndex()));
         labelManager.addAllLabels(panel);
         return panel;
     }
 
-    private JComboBox<String> createComboBox() {
-        comboBox = new JComboBox<String>();
+    private JComboBox createComboBox() {
+        comboBox = new JComboBox();
         for (String name : IPHelper.getAdapters()) {
             comboBox.addItem(name);
         }
