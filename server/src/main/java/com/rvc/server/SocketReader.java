@@ -19,8 +19,8 @@ class SocketReader implements Runnable {
 
     private String message;
 
-    public SocketReader(BufferedReader in, ConnectionState connectionState, Server serverCallbacks) {
-        this.in = in;
+    public SocketReader(IOController ioController, ConnectionState connectionState, Server serverCallbacks) {
+        this.in = ioController.bufferReader();
         this.connectionState = connectionState;
         this.receiverCallback = serverCallbacks;
         this.timeoutCallback = serverCallbacks;
@@ -57,7 +57,6 @@ class SocketReader implements Runnable {
                 connectionState.setServerRunning(false);
             }
         }
-
     }
 
     public void join() {
@@ -73,4 +72,5 @@ class SocketReader implements Runnable {
         void onReceiveMessage(String message);
 
     }
+
 }

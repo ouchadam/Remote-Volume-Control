@@ -43,4 +43,5 @@ public class DiscoveryService extends Service {
         super.onDestroy();
         serverDiscoverer.onDestroy();
     }
+
 }

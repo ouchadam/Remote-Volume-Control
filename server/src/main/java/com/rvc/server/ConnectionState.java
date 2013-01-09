@@ -22,8 +22,9 @@ public class ConnectionState {
         return clientConnected;
     }
 
-    public void setServerQuit(boolean state) {
-        this.serverQuit = state;
+    public void setServerQuit() {
+        this.serverQuit = true;
+        serverRunning = false;
     }
 
     public boolean getServerQuit() {

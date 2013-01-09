@@ -44,7 +44,7 @@ class RVCClient {
         int attempts = 0;
         while (!socket.isConnected()) {
             sleepThread();
-            attempts ++;
+            attempts++;
             if (attempts > MAX_RETRIES) {
                 return false;
             }

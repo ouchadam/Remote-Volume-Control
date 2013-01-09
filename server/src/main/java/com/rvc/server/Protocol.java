@@ -62,7 +62,6 @@ class Protocol {
         }
         if (input.substring(0, 3).equals(VOLUME)) {
             volumeController.setVolume(Integer.parseInt(input.substring(3)));
-            System.out.println(input.substring(3));
         }
     }
 
