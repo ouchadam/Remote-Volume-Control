@@ -13,8 +13,8 @@ public class IOHandler implements IOController {
     private PrintWriter out;
     private BufferedReader in;
 
-    public IOHandler(Socket clientSocket) {
-        this.clientSocket = clientSocket;
+    public IOHandler(SocketHandler socketHandler) {
+        this.clientSocket = socketHandler.clientSocket();
     }
 
     @Override
