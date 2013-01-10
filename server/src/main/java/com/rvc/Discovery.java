@@ -19,18 +19,18 @@ public class Discovery {
     }
 
     public void start() throws IOException {
-        ServiceInfo testService = createService(settings.getPort());
+        ServiceInfo testService = createService();
         registerService(testService);
+    }
+
+    ServiceInfo createService() {
+        return ServiceInfo.create(SERVICE_TYPE, "Test Service", settings.getPort(), "test service");
     }
 
     private void registerService(ServiceInfo testService) throws IOException {
         System.out.println("registering service");
         mdnsServer.registerService(testService);
         System.out.println("registered");
-    }
-
-    private ServiceInfo createService(int port) {
-        return ServiceInfo.create(SERVICE_TYPE, "Test Service", port, "test service");
     }
 
     public void unregister() {
