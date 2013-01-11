@@ -1,11 +1,11 @@
 package com.rvc.gui.main;
 
+import com.rvc.Main;
 import com.rvc.ServerController;
 import com.rvc.gui.ComboListener;
 import com.rvc.gui.tray.TrayExit;
 import com.rvc.gui.tray.TrayExitCallback;
 import com.rvc.util.IPHelper;
-import com.sun.javaws.Main;
 
 import javax.swing.*;
 import java.awt.*;
