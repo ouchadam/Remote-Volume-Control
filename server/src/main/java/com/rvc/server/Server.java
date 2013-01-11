@@ -29,13 +29,13 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         initConnection();
         callback.onClientConnected();
         startSocketReadingThread();
-        callback.onClientDisconnected();
         closeConnection();
+        callback.onClientDisconnected();
         return isServerToBeRestarted();
     }
 
     private void startSocketReadingThread() {
-        new SocketReader(ioController, connectionState, this).start().join();;
+        new SocketReader(ioController, connectionState, this).start().join();
     }
 
     private void initConnection() throws IOException {
@@ -86,13 +86,13 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     public void quit() {
         if (isOutputOpen()) {
             sendDisconnectPacket();
+            closeConnection();
         }
         connectionState.setServerQuit();
-        closeConnection();
     }
 
     private boolean isOutputOpen() {
-        return ioController.printWriter() != null;
+        return ioController != null;
     }
 
     private void sendDisconnectPacket() {
