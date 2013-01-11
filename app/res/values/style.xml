@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="VolumeText" parent="Wrap">
+        <item name="android:textSize">80sp</item>
+    </style>
+
+</resources>

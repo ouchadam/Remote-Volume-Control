@@ -1,6 +1,8 @@
 package com.adam.rvc.activity;
 
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import com.adam.rvc.R;
 import com.adam.rvc.receiver.ServerMessageReceiver;
 import com.adam.rvc.service.RVCServiceFactory;
@@ -17,8 +19,14 @@ public class MainActivity extends RVCActivity  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initWindow();
         setContentView(R.layout.activity_main);
         initMessageReceiver();
+    }
+
+    private void initWindow() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
     }
 
     private void initMessageReceiver() {

@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               style="@style/Match"
               android:orientation="vertical">
 
     <fragment
         android:id="@+id/status_fragment"
-        style="@style/MatchWidth"
+        style="@style/Wrap"
+        android:layout_alignParentRight="true"
         android:name="com.adam.rvc.fragment.StatusFragment"/>
 
     <fragment
         android:id="@+id/server_discovery_fragment"
-        style="@style/MatchWidth"
+        style="@style/Wrap"
+        android:layout_alignParentLeft="true"
         android:name="com.adam.rvc.fragment.ServerDiscoveryFragment"/>
 
     <fragment
         android:id="@+id/volume_fragment"
-        style="@style/MatchWidth"
+        style="@style/Wrap"
+        android:layout_centerInParent="true"
         android:name="com.adam.rvc.fragment.VolumeFragment"/>
 
-</LinearLayout>
+</RelativeLayout>
