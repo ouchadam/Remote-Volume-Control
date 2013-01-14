@@ -6,3 +6,5 @@ The Windows volume controller requires the use of Ray M.'s CoreAudioApi library.
 the server to adjust the volume via command prompt.
 
 (http://www.codeproject.com/Articles/18520/Vista-Core-Audio-API-Master-Volume-Control)
+
+The CoreAudioApi requires .Net 4.0 or higher
