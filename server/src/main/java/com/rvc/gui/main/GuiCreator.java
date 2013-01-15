@@ -2,7 +2,6 @@ package com.rvc.gui.main;
 
 import com.rvc.Main;
 import com.rvc.ServerController;
-import com.rvc.gui.ComboListener;
 import com.rvc.gui.tray.TrayExit;
 import com.rvc.gui.tray.TrayExitCallback;
 import com.rvc.util.IPHelper;
@@ -15,7 +14,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 
-public class GuiCreator extends JFrame implements ComboListener.ComboCallback {
+public class GuiCreator extends JFrame {
 
     private static final String FRAME_LABEL = "RVC Server";
 
@@ -164,11 +163,6 @@ public class GuiCreator extends JFrame implements ComboListener.ComboCallback {
 
     public void updateError(String update) {
         labelManager.setErrorText(update);
-    }
-
-    @Override
-    public void onSelectionChanged(int index) {
-        System.out.println("Combo : " + index);
     }
 
 }

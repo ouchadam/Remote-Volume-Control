@@ -1,10 +1,8 @@
 package com.rvc.server;
 
-import com.rvc.util.ConnectionTimeout;
-
 import java.io.IOException;
 
-public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout {
+public class Server implements SocketReader.ReceiverCallback {
 
     private static final String UPDATE_SERVER_START = "Server starting";
 
@@ -77,7 +75,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
         }
     }
 
-
     private void updateError(String error) {
         System.out.println(error);
         callback.onErrorUpdate(error);
@@ -106,24 +103,6 @@ public class Server implements SocketReader.ReceiverCallback, ConnectionTimeout 
     private void updateStatus(String status) {
         System.out.println(status);
         callback.onStatusUpdate(status);
-    }
-
-    @Override
-    public void onCountdown(int value) {
-        updateStatus("Timeout : " + value);
-    }
-
-    @Override
-    public void onConnectionTimedOut() {
-        updateStatus("Client Timed Out");
-        connectionState.setServerRunning(false);
-        connectionState.setClientConnected(false);
-    }
-
-    @Override
-    public void onConnected() {
-        updateStatus("Client Connected");
-        callback.onClientConnected();
     }
 
 }

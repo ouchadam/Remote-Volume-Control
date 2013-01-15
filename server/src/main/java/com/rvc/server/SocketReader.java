@@ -1,6 +1,5 @@
 package com.rvc.server;
 
-import com.rvc.util.ConnectionTimeout;
 import com.rvc.util.ExceptionLogger;
 
 import java.io.BufferedReader;
@@ -15,7 +14,6 @@ class SocketReader implements Runnable {
     private final BufferedReader in;
     private final ConnectionState connectionState;
     private final ReceiverCallback receiverCallback;
-    private final ConnectionTimeout timeoutCallback;
 
     private String message;
 
@@ -23,7 +21,6 @@ class SocketReader implements Runnable {
         this.in = ioController.bufferReader();
         this.connectionState = connectionState;
         this.receiverCallback = serverCallbacks;
-        this.timeoutCallback = serverCallbacks;
         readClientResponse = new Thread(this);
     }
 
@@ -34,7 +31,6 @@ class SocketReader implements Runnable {
 
     @Override
     public void run() {
-//        new Countdown(timeoutCallback, connectionState);
         Protocol protocol = new Protocol(connectionState);
 
         while (connectionState.isServerRunning()) {
