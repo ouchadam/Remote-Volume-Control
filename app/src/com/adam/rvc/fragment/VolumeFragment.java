@@ -11,8 +11,6 @@ import com.adam.rvc.receiver.VolumeUpdaterReceiver;
 
 public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceiver.OnVolumeUpdated {
 
-    private static final int SEEK_BAR_MAX = 100;
-
     private final VolumeUpdaterReceiver volumeReceiver;
 
     private TextTouchListener textTouchListener;
