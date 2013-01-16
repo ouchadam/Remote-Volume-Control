@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Parcelable;
 import com.adam.rvc.server.ServerData;
-import com.adam.rvc.util.ServerDiscoverer;
+import com.adam.rvc.discovery.ServerDiscoverer;
 
 public class ServerReceiver extends BaseReceiver {
 

@@ -1,10 +1,10 @@
-package com.adam.rvc.util;
+package com.adam.rvc.discovery;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import com.adam.rvc.listener.DiscoveryListener;
 import com.adam.rvc.receiver.ReceiverIntentFactory;
 import com.adam.rvc.server.ServerData;
+import com.adam.rvc.util.StatusUpdater;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;

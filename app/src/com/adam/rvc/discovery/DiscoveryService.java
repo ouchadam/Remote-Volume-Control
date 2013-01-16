@@ -1,9 +1,8 @@
-package com.adam.rvc.service;
+package com.adam.rvc.discovery;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import com.adam.rvc.util.ServerDiscoverer;
 import com.adam.rvc.util.StatusUpdater;
 
 import java.io.IOException;

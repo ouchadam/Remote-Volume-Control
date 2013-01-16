@@ -22,7 +22,7 @@
         </activity>
 
         <service android:name=".service.RVCBackgroundService" android:label="@string/service_name"/>
-        <service android:name=".service.DiscoveryService" android:label="@string/service_name"/>
+        <service android:name=".discovery.DiscoveryService" android:label="@string/service_name"/>
 
     </application>
 

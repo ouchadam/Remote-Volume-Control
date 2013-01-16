@@ -3,7 +3,7 @@ package com.adam.rvc.receiver;
 import android.content.Intent;
 import com.adam.rvc.server.ServerData;
 import com.adam.rvc.util.MessageHandler;
-import com.adam.rvc.util.ServerDiscoverer;
+import com.adam.rvc.discovery.ServerDiscoverer;
 import com.adam.rvc.util.StatusUpdater;
 
 public class ReceiverIntentFactory {

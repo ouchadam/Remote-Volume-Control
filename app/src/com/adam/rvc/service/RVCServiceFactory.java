@@ -2,6 +2,7 @@ package com.adam.rvc.service;
 
 import android.content.Context;
 import android.content.Intent;
+import com.adam.rvc.discovery.DiscoveryService;
 
 public class RVCServiceFactory {
 

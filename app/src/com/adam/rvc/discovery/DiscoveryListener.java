@@ -1,4 +1,4 @@
-package com.adam.rvc.listener;
+package com.adam.rvc.discovery;
 
 import com.adam.rvc.util.StatusUpdater;
 
