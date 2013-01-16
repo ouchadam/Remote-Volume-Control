@@ -9,6 +9,11 @@
         android:layout_alignParentTop="true"
         android:visibility="gone"/>
 
+    <ProgressBar
+        android:id="@+id/volume_progress"
+        style="@style/Wrap"
+        android:layout_centerInParent="true"/>
+
     <TextView
         android:id="@+id/volume_text"
         style="@style/VolumeText"

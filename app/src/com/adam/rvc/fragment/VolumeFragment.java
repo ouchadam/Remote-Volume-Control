@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.adam.rvc.R;
 import com.adam.rvc.listener.volume.TextTouchListener;
@@ -14,6 +15,8 @@ public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceive
     private final VolumeUpdaterReceiver volumeReceiver;
 
     private TextTouchListener textTouchListener;
+
+    private ProgressBar progressBar;
 
     public VolumeFragment() {
         volumeReceiver = new VolumeUpdaterReceiver(this);
@@ -35,18 +38,29 @@ public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceive
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_volume, container, false);
         initText(view);
+        initProgressBar(view);
         return view;
     }
 
     private void initText(View view) {
         TextView volumeText = (TextView) view.findViewById(R.id.volume_text);
-        volumeText.setText("0");
         textTouchListener = new TextTouchListener(context, volumeText);
         volumeText.setOnTouchListener(textTouchListener);
     }
 
+    private void initProgressBar(View view) {
+        progressBar = (ProgressBar) view.findViewById(R.id.volume_progress);
+    }
+
     @Override
     public void onVolumeUpdate(int volume) {
+        hideProgressBarIfShowing();
         textTouchListener.updateServerVolume(volume);
+    }
+
+    private void hideProgressBarIfShowing() {
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }
