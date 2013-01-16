@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.adam.rvc.R;
-import com.adam.rvc.listener.volume.TextListener;
+import com.adam.rvc.listener.volume.TextTouchListener;
 import com.adam.rvc.receiver.VolumeUpdaterReceiver;
 
 public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceiver.OnVolumeUpdated {
@@ -15,7 +15,7 @@ public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceive
 
     private final VolumeUpdaterReceiver volumeReceiver;
 
-    private TextListener textUpdater;
+    private TextTouchListener textTouchListener;
 
     public VolumeFragment() {
         volumeReceiver = new VolumeUpdaterReceiver(this);
@@ -43,12 +43,12 @@ public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceive
     private void initText(View view) {
         TextView volumeText = (TextView) view.findViewById(R.id.volume_text);
         volumeText.setText("0");
-        textUpdater = new TextListener(context, volumeText);
-        volumeText.setOnTouchListener(textUpdater);
+        textTouchListener = new TextTouchListener(context, volumeText);
+        volumeText.setOnTouchListener(textTouchListener);
     }
 
     @Override
     public void onVolumeUpdate(int volume) {
-        textUpdater.updateServerVolume(volume);
+        textTouchListener.updateServerVolume(volume);
     }
 }

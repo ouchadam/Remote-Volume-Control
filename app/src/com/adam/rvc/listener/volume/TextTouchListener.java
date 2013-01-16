@@ -5,7 +5,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-public class TextListener extends VolumeListener implements View.OnTouchListener {
+public class TextTouchListener extends VolumeListener implements View.OnTouchListener {
 
     private static final int THRESHOLD = 10;
 
@@ -13,7 +13,7 @@ public class TextListener extends VolumeListener implements View.OnTouchListener
     private float prevY;
     private int volume;
 
-    public TextListener(Context context, TextView textView) {
+    public TextTouchListener(Context context, TextView textView) {
         super(context);
         this.volumeText = textView;
     }
@@ -57,5 +57,6 @@ public class TextListener extends VolumeListener implements View.OnTouchListener
     private boolean isValidVolume(int newVolume) {
         return newVolume <= 100 && newVolume >= 0 && newVolume != volume;
     }
+
 }
 
