@@ -21,4 +21,10 @@
         android:layout_centerInParent="true"
         android:name="com.adam.rvc.fragment.VolumeFragment"/>
 
+    <fragment
+        android:id="@+id/bottom_action_bar_fragment"
+        style="@style/MatchWidth"
+        android:layout_alignParentBottom="true"
+        android:name="com.adam.rvc.fragment.ActionBarFragment"/>
+
 </RelativeLayout>
