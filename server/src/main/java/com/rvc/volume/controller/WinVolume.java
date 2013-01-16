@@ -2,14 +2,10 @@ package com.rvc.volume.controller;
 
 import com.rvc.volume.VolumeController;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
-class WinVolume implements VolumeController {
+class WinVolume implements VolumeController, GobblerCallBack {
 
-    private static final int DEFAULT_VOLUME = 50;
     private static final int COMMAND_LENGTH = 3;
 
     private int volume;
@@ -35,10 +31,15 @@ class WinVolume implements VolumeController {
     }
 
     private void startParsingResponse(Process proc) {
-        StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "ERROR");
-        StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), "OUTPUT");
+        StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "ERROR", this);
+        StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), "OUTPUT", this);
         errorGobbler.start();
         outputGobbler.start();
+    }
+
+    @Override
+    public void onCommandFinished(String message) {
+        this.volume = (int) (Float.parseFloat(message) * 100);
     }
 
     @Override
@@ -72,32 +73,4 @@ class WinVolume implements VolumeController {
         return cmd;
     }
 
-    private class StreamGobbler extends Thread {
-        private final InputStream is;
-        private final String type;
-
-        StreamGobbler(InputStream is, String type) {
-            this.is = is;
-            this.type = type;
-        }
-
-        public void run() {
-            String line = null;
-            try {
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-
-                while ((line = br.readLine()) != null) {
-                    volume = stringVolumeToInt(line);
-                }
-
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
-
-        private int stringVolumeToInt(String volume) {
-            return (int) (Float.parseFloat(volume) * 100);
-        }
-    }
 }
