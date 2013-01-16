@@ -46,7 +46,7 @@ public class TextListener extends VolumeListener implements View.OnTouchListener
         return prevY > motionEvent.getRawY() + THRESHOLD;
     }
 
-    private void updateServerVolume(int newVolume) {
+    public void updateServerVolume(int newVolume) {
         if (isValidVolume(newVolume)) {
             volume = newVolume;
             volumeText.setText("" + volume);

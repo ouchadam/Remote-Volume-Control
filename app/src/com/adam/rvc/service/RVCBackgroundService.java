@@ -8,6 +8,7 @@ import com.adam.rvc.receiver.OnMessageReceived;
 import com.adam.rvc.receiver.ReceiverIntentFactory;
 import com.adam.rvc.util.Log;
 import com.adam.rvc.util.StatusUpdater;
+import com.adam.rvc.util.VolumeUpdater;
 
 import java.io.IOException;
 
@@ -95,11 +96,31 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
 
     @Override
     public void onMessageReceived(String message) {
+        statusUpdater.updateStatus("Connected");
         broadcastServerMessage(message);
     }
 
     private void broadcastServerMessage(String message) {
-        sendBroadcast(ReceiverIntentFactory.broadcastServerMessage(message));
+        if (isVolumeMessage(message)) {
+            VolumeUpdater volumeUpdater = new VolumeUpdater(this);
+            volumeUpdater.updateVolume(parseVolumeMessage(message));
+        } else {
+            sendBroadcast(ReceiverIntentFactory.broadcastServerStatusMessage(message));
+        }
+    }
+
+    private boolean isVolumeMessage(String message) {
+        try {
+            parseVolumeMessage(message);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private int parseVolumeMessage(String message) {
+        return Integer.parseInt(message.substring(2, 4), 16);
     }
 
 }

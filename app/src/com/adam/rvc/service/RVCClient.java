@@ -22,6 +22,7 @@ class RVCClient {
     private final BufferedReader input;
 
     private OnMessageReceived onMessageReceived;
+    private String prevMessage;
 
     public RVCClient(String ip, int port) throws IOException {
         socket = new Socket(ip, port);
@@ -74,6 +75,8 @@ class RVCClient {
                 do {
                     String message = readLineFromServer();
                     if (validMessage(message)) {
+                        prevMessage = message;
+                        Log.log("From server : " + message);
                         onMessageReceived.onMessageReceived(message);
                     }
                 } while (!socket.isClosed());
@@ -91,7 +94,7 @@ class RVCClient {
     }
 
     private boolean validMessage(String message) {
-        return message != null && message.length() > 0;
+        return message != null && message.length() > 0 && !message.equals(prevMessage);
     }
 
     public void writeToServer(String message) {
