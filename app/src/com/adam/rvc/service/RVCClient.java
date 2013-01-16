@@ -34,11 +34,13 @@ class RVCClient {
         this.onMessageReceived = onMessageReceived;
     }
 
-    public void connect() {
+    public boolean connect() {
         if (attemptToVerifyConnection()) {
             sendConnectPacket();
             readFromServer();
+            return true;
         }
+        return false;
     }
 
     private boolean attemptToVerifyConnection() {

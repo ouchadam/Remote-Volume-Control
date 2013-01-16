@@ -19,8 +19,9 @@ class RVCConnection implements ServerConnection {
     @Override
     public void connect() {
         statusUpdater.updateStatusAndLog("Connecting...");
-        client.connect();
-        statusUpdater.updateStatusAndLog("Connected");
+        if (client.connect()) {
+            statusUpdater.updateStatusAndLog("Connected");
+        }
     }
 
     @Override
