@@ -2,7 +2,6 @@ package com.adam.rvc.util;
 
 import android.content.Context;
 import com.adam.rvc.receiver.OnMessageReceived;
-import com.adam.rvc.receiver.ReceiverIntentFactory;
 import com.adam.rvc.service.RVCServiceFactory;
 
 public class MessageHandler implements OnMessageReceived {
@@ -25,7 +24,10 @@ public class MessageHandler implements OnMessageReceived {
         if (isDisconnectMessage(message)) {
             disconnectFromServer();
         } else {
-            updateStatus("volume : " + getVolumeFromMessage(message));
+            if (isVolumeMessage(message)) {
+                VolumeUpdater volumeUpdater = new VolumeUpdater(context);
+                volumeUpdater.updateVolume(getVolumeFromMessage(message));
+            }
         }
     }
 
@@ -37,12 +39,18 @@ public class MessageHandler implements OnMessageReceived {
         return message.substring(0, 1).equals(SERVER_DISCONNECT);
     }
 
-    private int getVolumeFromMessage(String message) {
-        return Integer.parseInt(message.substring(2, 4), HEX_RADIX);
+    private boolean isVolumeMessage(String message) {
+        try {
+            getVolumeFromMessage(message);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    private void updateStatus(String message) {
-        context.sendBroadcast(ReceiverIntentFactory.broadcastStatusMessage(message));
+    private int getVolumeFromMessage(String message) {
+        return Integer.parseInt(message.substring(2, 4), HEX_RADIX);
     }
 
 }

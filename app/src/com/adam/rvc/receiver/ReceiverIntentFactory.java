@@ -9,7 +9,7 @@ import com.adam.rvc.util.VolumeUpdater;
 
 public class ReceiverIntentFactory {
 
-    public static Intent broadcastServerStatusMessage(String message) {
+    public static Intent broadcastServerMessage(String message) {
         Intent intent = new Intent();
         intent.setAction(MessageHandler.ACTION_SERVER_MESSAGE);
         intent.putExtra(MessageHandler.EXTRA_MESSAGE, message);
