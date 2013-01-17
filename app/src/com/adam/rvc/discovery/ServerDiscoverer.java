@@ -35,7 +35,7 @@ public class ServerDiscoverer implements DiscoveryListener.DiscoveryCallback {
 
     public void startListening() throws IOException {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        statusUpdater.updateStatusAndLog("Starting");
+        statusUpdater.updateStatusAndLog("Searching...");
         int intaddr = getIntIp(wifi);
         if (addressIsValid(intaddr)) {
             initMulticastLock(wifi);

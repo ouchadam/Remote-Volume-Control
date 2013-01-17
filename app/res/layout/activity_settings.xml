@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/Match">
+
+
+    <CheckBox
+        android:id="@+id/settings_checkbox_show_server_data"
+        style="@style/Wrap"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/settings_text_show_server"
+        android:text="Show connection details"
+        style="@style/Wrap"
+        android:textSize="20sp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+
+
+</RelativeLayout>

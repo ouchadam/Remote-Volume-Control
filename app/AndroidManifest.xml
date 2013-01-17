@@ -21,6 +21,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.SettingsActivity" android:label="@string/app_name"
+                  android:uiOptions="splitActionBarWhenNarrow" android:theme="@style/Theme.Sherlock">
+        </activity>
+
         <service android:name=".service.RVCBackgroundService" android:label="@string/service_name"/>
         <service android:name=".discovery.DiscoveryService" android:label="@string/service_name"/>
 

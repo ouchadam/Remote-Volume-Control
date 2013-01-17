@@ -1,6 +1,9 @@
 package com.adam.rvc.activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import com.adam.rvc.R;
@@ -19,14 +22,8 @@ public class MainActivity extends RVCActivity  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initWindow();
         setContentView(R.layout.activity_main);
         initMessageReceiver();
-    }
-
-    private void initWindow() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
     }
 
     private void initMessageReceiver() {
@@ -36,8 +33,18 @@ public class MainActivity extends RVCActivity  {
     @Override
     protected void onResume() {
         super.onResume();
+        setFragmentVisibility(findViewById(R.id.server_discovery_fragment));
         startService(RVCServiceFactory.startServerScanner(this));
         registerReceiver();
+    }
+
+    private void setFragmentVisibility(View view) {
+        SharedPreferences sharedPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        if (sharedPrefs.getBoolean("server", false)) {
+            view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.GONE);
+        }
     }
 
     private void registerReceiver() {

@@ -1,11 +1,13 @@
 package com.adam.rvc.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import com.adam.rvc.R;
+import com.adam.rvc.activity.SettingsActivity;
 import com.adam.rvc.view.org.holoeverywhere.PopupMenu;
 
 public class ActionBarFragment extends BaseFragment implements View.OnClickListener {
@@ -35,11 +37,16 @@ public class ActionBarFragment extends BaseFragment implements View.OnClickListe
 
             @Override
             public boolean onMenuItemClick(com.actionbarsherlock.view.MenuItem item) {
+                startActivity(createSettingsIntent());
                 return false;
             }
         });
 
         popupMenu.show();
+    }
+
+    private Intent createSettingsIntent() {
+        return new Intent(context, SettingsActivity.class);
     }
 
 }
