@@ -26,7 +26,6 @@ public class RVCServiceFactory {
     }
 
     public static Intent startServerScanner(Context context) {
-        Intent pushServiceIntent = new Intent(context, DiscoveryService.class);
-        return pushServiceIntent;
+        return new Intent(context, DiscoveryService.class);
     }
 }

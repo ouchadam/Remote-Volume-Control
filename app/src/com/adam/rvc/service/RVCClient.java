@@ -107,7 +107,12 @@ class RVCClient {
     }
 
     public void disconnect() {
-        closeSocket();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                closeSocket();
+            }
+        }).start();
     }
 
     private void closeSocket() {
