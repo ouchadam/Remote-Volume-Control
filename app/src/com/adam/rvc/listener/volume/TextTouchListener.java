@@ -21,7 +21,11 @@ public class TextTouchListener extends VolumeListener implements View.OnTouchLis
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-            updateServerVolume(motionEventToVolume(motionEvent));
+            int volume = motionEventToVolume(motionEvent);
+            if (isValidVolume(volume)) {
+                updateLocalVolume(volume);
+                updateServerVolume(volume);
+            }
         }
         return true;
     }
@@ -46,12 +50,9 @@ public class TextTouchListener extends VolumeListener implements View.OnTouchLis
         return prevY > motionEvent.getRawY() + THRESHOLD;
     }
 
-    public void updateServerVolume(int newVolume) {
-        if (isValidVolume(newVolume)) {
-            volume = newVolume;
-            volumeText.setText("" + volume);
-            updateVolume(volume);
-        }
+    public void updateLocalVolume(int newVolume) {
+        volume = newVolume;
+        volumeText.setText("" + volume);
     }
 
     private boolean isValidVolume(int newVolume) {

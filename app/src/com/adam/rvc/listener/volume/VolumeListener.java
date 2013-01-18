@@ -13,7 +13,7 @@ abstract class VolumeListener {
         this.context = context;
     }
 
-    public void updateVolume(int progress) {
+    public void updateServerVolume(int progress) {
         context.startService(RVCServiceFactory.writeToServer(context, createMessage(progress)));
     }
 

@@ -21,6 +21,8 @@ public class MessageHandler implements OnMessageReceived {
     @Override
     public void onMessageReceived(String message) {
         Log.log("Received message : " + message);
+        StatusUpdater statusUpdater = new StatusUpdater(context);
+        statusUpdater.updateStatus("Received message : " + message);
         if (isDisconnectMessage(message)) {
             disconnectFromServer();
         } else {

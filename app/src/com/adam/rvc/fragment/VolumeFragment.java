@@ -55,7 +55,7 @@ public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceive
     @Override
     public void onVolumeUpdate(int volume) {
         hideProgressBarIfShowing();
-        textTouchListener.updateServerVolume(volume);
+        textTouchListener.updateLocalVolume(volume);
     }
 
     private void hideProgressBarIfShowing() {

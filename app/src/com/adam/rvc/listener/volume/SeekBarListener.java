@@ -16,7 +16,7 @@ public class SeekBarListener extends VolumeListener implements SeekBar.OnSeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
         volumeText.setText("" + progress);
-        updateVolume(progress);
+        updateServerVolume(progress);
     }
 
     public void onStartTrackingTouch(SeekBar seekBar) {
