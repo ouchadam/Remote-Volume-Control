@@ -23,7 +23,6 @@ public class DiscoveryListener implements ServiceListener {
 
     @Override
     public void serviceRemoved(ServiceEvent serviceEvent) {
-//        statusUpdater.updateStatusAndLog("Service removed");
         callback.onServerDisconnected();
     }
 
