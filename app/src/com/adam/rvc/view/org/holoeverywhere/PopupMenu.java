@@ -3,10 +3,7 @@ package com.adam.rvc.view.org.holoeverywhere;
 
 import android.content.Context;
 import android.view.View;
-import com.actionbarsherlock.internal.view.menu.MenuBuilder;
-import com.actionbarsherlock.internal.view.menu.MenuPopupHelper;
-import com.actionbarsherlock.internal.view.menu.MenuPresenter;
-import com.actionbarsherlock.internal.view.menu.SubMenuBuilder;
+import com.actionbarsherlock.internal.view.menu.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -23,7 +20,7 @@ public class PopupMenu implements MenuBuilder.Callback, MenuPresenter.Callback {
     private final View mAnchor;
     private final Context mContext;
     private final MenuBuilder mMenu;
-    private final MenuPopupHelper mPopup;
+    private final RVCMenuPopupHelper mPopup;
 
     private OnDismissListener mDismissListener;
     private OnMenuItemClickListener mMenuItemClickListener;
@@ -33,7 +30,7 @@ public class PopupMenu implements MenuBuilder.Callback, MenuPresenter.Callback {
         mMenu = new MenuBuilder(context);
         mMenu.setCallback(this);
         mAnchor = anchor;
-        mPopup = new MenuPopupHelper(context, mMenu, mAnchor);
+        mPopup = new RVCMenuPopupHelper(context, mMenu, mAnchor);
         mPopup.setCallback(this);
     }
 
@@ -83,7 +80,7 @@ public class PopupMenu implements MenuBuilder.Callback, MenuPresenter.Callback {
         if (!subMenu.hasVisibleItems()) {
             return true;
         }
-        new MenuPopupHelper(mContext, subMenu, mAnchor).show();
+        new RVCMenuPopupHelper(mContext, subMenu, mAnchor).show();
         return true;
     }
 
