@@ -1,13 +1,12 @@
 package com.adam.rvc.activity;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import com.adam.rvc.R;
 import com.adam.rvc.receiver.ServerMessageReceiver;
 import com.adam.rvc.service.RVCServiceFactory;
 import com.adam.rvc.util.MessageHandler;
+import com.adam.rvc.util.SharedPrefsHelper;
 
 public class MainActivity extends RVCActivity  {
 
@@ -37,8 +36,7 @@ public class MainActivity extends RVCActivity  {
     }
 
     private void setFragmentVisibility(View view) {
-        SharedPreferences sharedPrefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        if (sharedPrefs.getBoolean("server", false)) {
+        if (new SharedPrefsHelper(this).getShowServerDetailsSetting()) {
             view.setVisibility(View.VISIBLE);
         } else {
             view.setVisibility(View.GONE);

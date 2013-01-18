@@ -35,7 +35,7 @@ public class MessageHandler implements OnMessageReceived {
     }
 
     private boolean showMessageData() {
-        return context.getSharedPreferences("prefs", Context.MODE_PRIVATE).getBoolean("show_message", false);
+        return new SharedPrefsHelper(context).getShowMessageSetting();
     }
 
     private void updateStatusWithMessage(String message) {

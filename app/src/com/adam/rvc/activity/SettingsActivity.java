@@ -1,46 +1,44 @@
 package com.adam.rvc.activity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import com.adam.rvc.R;
+import com.adam.rvc.util.SharedPrefsHelper;
 
 public class SettingsActivity extends RVCActivity implements CompoundButton.OnCheckedChangeListener {
 
-    private SharedPreferences myPrefs;
+    private SharedPrefsHelper myPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        myPrefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        myPrefs = new SharedPrefsHelper(this);
         initCheckboxs();
     }
 
     private void initCheckboxs() {
-        initCheckBox(R.id.settings_checkbox_show_server_data, "server");
-        initCheckBox(R.id.settings_checkbox_show_message_data, "show_message");
+        initCheckBox(R.id.settings_checkbox_show_server_data, SharedPrefsHelper.PREFS_SHOW_SERVER_DETAILS);
+        initCheckBox(R.id.settings_checkbox_show_message_data, SharedPrefsHelper.PREFS_SHOW_MESSAGE_DETAILS);
     }
 
     private void initCheckBox(int resId, String prefsLocation) {
         CheckBox checkbox = (CheckBox) findViewById(resId);
-        checkbox.setChecked(myPrefs.getBoolean(prefsLocation, false));
+        checkbox.setChecked(myPrefs.getBoolean(prefsLocation));
         checkbox.setOnCheckedChangeListener(this);
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        SharedPreferences.Editor prefsEditor = myPrefs.edit();
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checkedState) {
         switch (compoundButton.getId()) {
             case R.id.settings_checkbox_show_server_data :
-                prefsEditor.putBoolean("server", b);
+                myPrefs.storeServerDetailsSetting(checkedState);
                 break;
             case R.id.settings_checkbox_show_message_data :
-                prefsEditor.putBoolean("show_message", b);
+                myPrefs.storeMessageDetailsSetting(checkedState);
                 break;
 
         }
-        prefsEditor.commit();
     }
 }
