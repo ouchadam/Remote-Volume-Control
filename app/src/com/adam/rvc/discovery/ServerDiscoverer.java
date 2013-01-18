@@ -113,6 +113,7 @@ public class ServerDiscoverer implements DiscoveryListener.DiscoveryCallback {
 
     public void onDestroy() {
         zeroConf.unregisterAllServices();
+        releaseMulticastLock();
     }
 
 }
