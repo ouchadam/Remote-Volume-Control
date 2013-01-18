@@ -91,6 +91,12 @@ public class ServerDiscoverer implements DiscoveryListener.DiscoveryCallback {
         broadcastServerDataReceived(serviceEvent);
     }
 
+    @Override
+    public void onServerDisconnected() {
+        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        initMulticastLock(wifi);
+    }
+
     private void releaseMulticastLock() {
         mLock.release();
         mLock = null;

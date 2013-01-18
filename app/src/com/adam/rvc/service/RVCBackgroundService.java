@@ -23,8 +23,10 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
 
     private final OnMessageReceived onMessageReceived = this;
     private final StatusUpdater statusUpdater;
+    private static final int MAX_RETRIES = 2;
 
     private ServerConnection connection;
+    private int retries = 0;
 
     public RVCBackgroundService() {
         statusUpdater = new StatusUpdater(this);
@@ -58,10 +60,26 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
                 } catch (IOException e) {
                     connection = null;
                     statusUpdater.updateStatusAndLog(getString(R.string.connection_failed), e);
+                    e.printStackTrace();
+                    if (retries < MAX_RETRIES) {
+                        retryConnection(ipAddress, port);
+                    }
                 }
             }
         }).start();
 
+    }
+
+    private void retryConnection(String ipAddress, int port) {
+        try {
+            Thread.sleep(1000);
+            statusUpdater.updateStatus("Retrying");
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        retries ++;
+        connect(ipAddress, port);
     }
 
     private void writeMessageToServer(String message) {
