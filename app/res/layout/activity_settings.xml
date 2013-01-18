@@ -3,7 +3,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               style="@style/Match">
 
-
     <CheckBox
         android:id="@+id/settings_checkbox_show_server_data"
         style="@style/Wrap"
@@ -35,6 +34,5 @@
         android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
         android:layout_below="@id/settings_text_show_server"/>
-
 
 </RelativeLayout>

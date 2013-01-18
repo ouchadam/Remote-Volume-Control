@@ -30,17 +30,13 @@ public class MainActivity extends RVCActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        setFragmentVisibility(findViewById(R.id.server_discovery_fragment));
+        findViewById(R.id.server_discovery_fragment).setVisibility(getFragmentVisibility());
         startService(RVCServiceFactory.startServerScanner(this));
         registerReceiver();
     }
 
-    private void setFragmentVisibility(View view) {
-        if (new SharedPrefsHelper(this).getShowServerDetailsSetting()) {
-            view.setVisibility(View.VISIBLE);
-        } else {
-            view.setVisibility(View.GONE);
-        }
+    private int getFragmentVisibility() {
+        return new SharedPrefsHelper(this).getShowServerDetailsSetting() ? View.VISIBLE : View.GONE;
     }
 
     private void registerReceiver() {
