@@ -28,3 +28,6 @@ project.properties
 
 # MAC
 *.DS_Store
+
+#Analytics
+app/res/values/analytics.xml
