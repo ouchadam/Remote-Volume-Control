@@ -21,8 +21,9 @@ public class MessageHandler implements OnMessageReceived {
     @Override
     public void onMessageReceived(String message) {
         Log.log("Received message : " + message);
-        StatusUpdater statusUpdater = new StatusUpdater(context);
-        statusUpdater.updateStatus("Received message : " + message);
+        if (showMessageData()) {
+            updateStatusWithMessage(message);
+        }
         if (isDisconnectMessage(message)) {
             disconnectFromServer();
         } else {
@@ -31,6 +32,15 @@ public class MessageHandler implements OnMessageReceived {
                 volumeUpdater.updateVolume(getVolumeFromMessage(message));
             }
         }
+    }
+
+    private boolean showMessageData() {
+        return context.getSharedPreferences("prefs", Context.MODE_PRIVATE).getBoolean("show_message", false);
+    }
+
+    private void updateStatusWithMessage(String message) {
+        StatusUpdater statusUpdater = new StatusUpdater(context);
+        statusUpdater.updateStatus("Received message : " + message);
     }
 
     private void disconnectFromServer() {
