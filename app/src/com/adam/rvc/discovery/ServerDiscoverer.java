@@ -19,7 +19,7 @@ public class ServerDiscoverer implements DiscoveryListener.DiscoveryCallback {
     public static final String EXTRA_SERVER_DATA = "com.adam.rvc.receiver.EXTRA_SERVER_DATA";
 
     private static final String HOSTNAME = "RVC_SERVER";
-    private static final String TOUCH_ABLE_TYPE = "_my-service-type._tcp.local.";
+    private static final String TOUCH_ABLE_TYPE = "_rvc-service._tcp.local.";
 
     private final DiscoveryListener.DiscoveryCallback discoveryCallback = this;
     private final Context context;

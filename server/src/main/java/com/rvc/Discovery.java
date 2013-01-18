@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 
 public class Discovery {
 
-    private static final String SERVICE_TYPE = "my-service-type";
+    private static final String SERVICE_TYPE = "rvc-service";
 
     private final JmDNS mdnsServer;
     private final ServerSettings settings;
