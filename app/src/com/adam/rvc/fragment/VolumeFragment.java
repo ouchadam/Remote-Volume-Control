@@ -54,16 +54,12 @@ public class VolumeFragment extends BaseFragment implements VolumeUpdaterReceive
 
     @Override
     public void onVolumeUpdate(int volume) {
-        hideProgressBarIfShowing();
+        hideProgressBar();
         textTouchListener.updateLocalVolume(volume);
     }
 
-    private void hideProgressBarIfShowing() {
-        progressBar.setVisibility(hideVisibilityIfShowing(progressBar.getVisibility()));
-    }
-
-    private int hideVisibilityIfShowing(int visibility) {
-        return visibility == View.VISIBLE ? View.GONE : View.VISIBLE;
+    private void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
     }
 
 }
