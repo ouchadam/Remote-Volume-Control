@@ -29,5 +29,8 @@ project.properties
 # MAC
 *.DS_Store
 
+#Roboelectric
+app/tmp
+
 #Analytics
 app/res/values/analytics.xml

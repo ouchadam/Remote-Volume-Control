@@ -48,34 +48,38 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.log("Service started with intent : " + intent);
         if (intent.getAction().equals(ACTION_START)) {
-            connect(intent.getStringExtra(EXTRA_IP_ADDRESS), intent.getIntExtra(EXTRA_PORT_INT, EXTRA_ERROR_VALUE));
+            connectFromNewThread(intent.getStringExtra(EXTRA_IP_ADDRESS), intent.getIntExtra(EXTRA_PORT_INT, EXTRA_ERROR_VALUE));
         } else if (intent.getAction().equals(ACTION_WRITE)) {
             writeMessageToServer(intent.getStringExtra(EXTRA_WRITE_MESSAGE));
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void connect(final String ipAddress, final int port) {
+    private void connectFromNewThread(final String ipAddress, final int port) {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                try {
-                    if (connection == null) {
-                        connection = new RVCConnection(ipAddress, port, onMessageReceived, statusUpdater);
-                    }
-                    connection.connect();
-                } catch (IOException e) {
-                    connection = null;
-                    statusUpdater.updateStatusAndLog(getString(R.string.connection_failed), e);
-                    e.printStackTrace();
-                    if (retries < MAX_RETRIES) {
-                        retryConnection(ipAddress, port);
-                    }
-                }
+                connect(ipAddress, port);
             }
         }).start();
 
+    }
+
+    private void connect(String ipAddress, int port) {
+        try {
+            if (connection == null) {
+                connection = new RVCConnection(ipAddress, port, onMessageReceived, statusUpdater);
+            }
+            connection.connect();
+        } catch (IOException e) {
+            connection = null;
+            statusUpdater.updateStatusAndLog(getString(R.string.connection_failed), e);
+            e.printStackTrace();
+            if (retries < MAX_RETRIES) {
+                retryConnection(ipAddress, port);
+            }
+        }
     }
 
     private void retryConnection(String ipAddress, int port) {
@@ -87,7 +91,7 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
             e.printStackTrace();
         }
         retries ++;
-        connect(ipAddress, port);
+        connectFromNewThread(ipAddress, port);
     }
 
     private void writeMessageToServer(String message) {
