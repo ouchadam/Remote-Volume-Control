@@ -13,29 +13,41 @@ public class MessageHandler implements OnMessageReceived {
     private static final int HEX_RADIX = 16;
 
     private final Context context;
+    private final SharedPrefsHelper sharedPrefsHelper;
+    private final VolumeUpdater volumeUpdater;
 
     public MessageHandler(Context context) {
+        this(context, new SharedPrefsHelper(context), new VolumeUpdater(context));
+    }
+
+    public MessageHandler(Context context, SharedPrefsHelper sharedPrefsHelper, VolumeUpdater volumeUpdater) {
         this.context = context;
+        this.sharedPrefsHelper = sharedPrefsHelper;
+        this.volumeUpdater = volumeUpdater;
     }
 
     @Override
     public void onMessageReceived(String message) {
-        Log.log("Received message : " + message);
-        if (showMessageData()) {
-            updateStatusWithMessage(message);
-        }
-        if (isDisconnectMessage(message)) {
-            disconnectFromServer();
-        } else {
-            if (isVolumeMessage(message)) {
-                VolumeUpdater volumeUpdater = new VolumeUpdater(context);
-                volumeUpdater.updateVolume(getVolumeFromMessage(message));
+        if (isValidMessage(message)) {
+            if (showMessageData()) {
+                updateStatusWithMessage(message);
+            }
+            if (isDisconnectMessage(message)) {
+                disconnectFromServer();
+            } else {
+                if (isValidVolumeMessage(message)) {
+                    volumeUpdater.updateVolume(getVolumeFromMessage(message));
+                }
             }
         }
     }
 
+    private boolean isValidMessage(String message) {
+        return message != null && message.length() > 0;
+    }
+
     private boolean showMessageData() {
-        return new SharedPrefsHelper(context).getShowMessageSetting();
+        return sharedPrefsHelper.getShowMessageSetting();
     }
 
     private void updateStatusWithMessage(String message) {
@@ -51,14 +63,14 @@ public class MessageHandler implements OnMessageReceived {
         return message.substring(0, 1).equals(SERVER_DISCONNECT);
     }
 
-    private boolean isVolumeMessage(String message) {
+    private boolean isValidVolumeMessage(String message) {
         try {
-            getVolumeFromMessage(message);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new VolumeValidater().validate(getVolumeFromMessage(message));
+        } catch (NumberFormatException e) {
+            return false;
+        } catch (StringIndexOutOfBoundsException e) {
+            return false;
         }
-        return false;
     }
 
     private int getVolumeFromMessage(String message) {

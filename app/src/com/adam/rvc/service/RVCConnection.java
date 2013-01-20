@@ -11,8 +11,12 @@ class RVCConnection implements ServerConnection {
     private final StatusUpdater statusUpdater;
 
     public RVCConnection(String ip, int port, OnMessageReceived onMessageReceived, StatusUpdater statusUpdater) throws IOException {
+        this(onMessageReceived, statusUpdater, new RVCClient(ip, port));
+    }
+
+    public RVCConnection(OnMessageReceived onMessageReceived, StatusUpdater statusUpdater, RVCClient rvcClient) throws IOException {
         this.statusUpdater = statusUpdater;
-        client = new RVCClient(ip, port);
+        this.client = rvcClient;
         client.setMessageListener(onMessageReceived);
     }
 
