@@ -14,13 +14,13 @@ class Protocol {
     private static final String VOLUME = "vol";
     private static final String SCAN_EXIT = "scan_exit";
 
-    private final ConnectionState server;
+    private final ServerState server;
     private final VolumeController volumeController;
 
     private String exitCode;
 	private String vol;
 
-	Protocol(ConnectionState server) {
+	Protocol(ServerState server) {
         this.server = server;
         exitCode = "0";
 		this.vol = "00";
@@ -56,13 +56,18 @@ class Protocol {
             new Shutdown().shutDown();
         }
         if (input.equals(EXIT)) {
-            server.setClientConnected(false);
+//            server.setClientConnected(false);
             exitCode = "1";
             System.out.println("Client chose to disconnect");
         }
         if (input.substring(0, 3).equals(VOLUME)) {
-            volumeController.setVolume(Integer.parseInt(input.substring(3)));
+            int volume = getVolumeFromMessage(input);
+            volumeController.setVolume(volume);
         }
+    }
+
+    private int getVolumeFromMessage(String input) {
+        return Integer.parseInt(input.substring(3));
     }
 
     private String getServerState() {

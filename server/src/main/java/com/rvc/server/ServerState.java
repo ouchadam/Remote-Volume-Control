@@ -1,6 +1,6 @@
 package com.rvc.server;
 
-public class ConnectionState {
+public class ServerState {
 
     private boolean serverQuit;
     private boolean clientConnected;
@@ -10,11 +10,11 @@ public class ConnectionState {
         this.clientConnected = clientConnected;
     }
 
-    public boolean isServerRunning() {
+    public synchronized boolean isServerRunning() {
         return serverRunning;
     }
 
-    public void setServerRunning(boolean serverRunning) {
+    public synchronized void setServerRunning(boolean serverRunning) {
         this.serverRunning = serverRunning;
     }
 
@@ -23,7 +23,6 @@ public class ConnectionState {
     }
 
     public void setServerQuit() {
-        this.serverQuit = true;
         serverRunning = false;
     }
 

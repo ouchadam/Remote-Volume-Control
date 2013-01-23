@@ -12,15 +12,15 @@ class SocketReader implements Runnable {
 
     private final Thread readClientResponse;
     private final BufferedReader in;
-    private final ConnectionState connectionState;
+    private final ServerState serverState;
     private final ReceiverCallback receiverCallback;
 
     private String message;
 
-    public SocketReader(IOController ioController, ConnectionState connectionState, Server serverCallbacks) {
-        this.in = ioController.bufferReader();
-        this.connectionState = connectionState;
-        this.receiverCallback = serverCallbacks;
+    public SocketReader(BufferedReader bufferedReader, ServerState serverState, ReceiverCallback receiverCallback) {
+        this.in = bufferedReader;
+        this.serverState = serverState;
+        this.receiverCallback = receiverCallback;
         readClientResponse = new Thread(this);
     }
 
@@ -31,9 +31,10 @@ class SocketReader implements Runnable {
 
     @Override
     public void run() {
-        Protocol protocol = new Protocol(connectionState);
+        Protocol protocol = new Protocol(serverState);
+        boolean shouldRun = true;
 
-        while (connectionState.isServerRunning()) {
+        while (shouldRun && serverState.isServerRunning()) {
             try {
                 String rawMessage = in.readLine();
                 if (rawMessage != null) {
@@ -41,31 +42,30 @@ class SocketReader implements Runnable {
                     receiverCallback.onReceiveMessage(message);
                 }
             } catch (IOException e) {
+                e.printStackTrace();
                 if (e instanceof SocketException) {
-                    connectionState.setServerRunning(false);
+                    serverState.setServerRunning(false);
                 } else {
                     ExceptionLogger.saveException(e);
-                    connectionState.setServerRunning(false);
+                    serverState.setServerRunning(false);
                 }
             }
 
             if (message.substring(0, 1).equals(SERVER_EXIT)) {
-                connectionState.setServerRunning(false);
+                shouldRun = false;
             }
         }
-    }
-
-    public void join() {
         try {
-            this.readClientResponse.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            receiverCallback.onConnectionFinished();
+        } catch (IOException e) {
         }
     }
 
     public interface ReceiverCallback {
 
         void onReceiveMessage(String message);
+
+        void onConnectionFinished() throws IOException;
 
     }
 

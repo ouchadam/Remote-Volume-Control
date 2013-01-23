@@ -13,22 +13,23 @@ public class IOHandler implements IOController {
     private PrintWriter out;
     private BufferedReader in;
 
-    public IOHandler(SocketHandler socketHandler) {
-        this.clientSocket = socketHandler.clientSocket();
+    public IOHandler(Socket clientSocket) {
+        this.clientSocket = clientSocket;
     }
 
     @Override
     public void openIO() throws IOException {
         in = createInput();
         out = createOutput();
-    }
-
-    private PrintWriter createOutput() throws IOException {
-        return new PrintWriter(clientSocket.getOutputStream(), true);
+        System.out.println("Client IO open");
     }
 
     private BufferedReader createInput() throws IOException {
         return new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    }
+
+    private PrintWriter createOutput() throws IOException {
+        return new PrintWriter(clientSocket.getOutputStream(), true);
     }
 
     @Override
@@ -37,7 +38,8 @@ public class IOHandler implements IOController {
             out.flush();
             out.close();
             in.close();
-            System.out.println("IO closed");
+            clientSocket.close();
+            System.out.println("Client closed");
         } else {
             out = null;
             in = null;

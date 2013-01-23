@@ -12,18 +12,14 @@ public class SocketHandler {
 
     private final ServerCallbacks callback;
 
-    private Socket clientSocket;
     private ServerSocket serverSocket;
-    private ConnectionState connectionState;
 
-    public SocketHandler(ServerCallbacks callback, ConnectionState connectionState) {
+    public SocketHandler(ServerCallbacks callback) {
         this.callback = callback;
-        this.connectionState = connectionState;
     }
 
-    public void createSockets(int port) throws IOException {
+    public void initServerSocket(int port) throws IOException {
         serverSocket = createServerSocket(port);
-        clientSocket = createClientSocket();
     }
 
     private ServerSocket createServerSocket(int port) {
@@ -36,25 +32,26 @@ public class SocketHandler {
         return serverSocket;
     }
 
-    private Socket createClientSocket() throws IOException {
+    public Socket waitForClient() throws IOException {
+        Socket clientSocket = createClientSocket();
         callback.onStatusUpdate(UPDATE_WAITING_FOR_CLIENT);
-        clientSocket = serverSocket.accept();
-        callback.onStatusUpdate(UPDATE_CLIENT_SOCKET_CONNECTED);
-        connectionState.setServerRunning(true);
         return clientSocket;
     }
 
-    public void closeSockets() throws IOException {
-        if (serverSocket != null && clientSocket != null) {
+    private Socket createClientSocket() throws IOException {
+        Socket clientSocket = serverSocket.accept();
+        System.out.println("Client Connected " + clientSocket.getInetAddress().getHostAddress());
+        callback.onStatusUpdate(UPDATE_CLIENT_SOCKET_CONNECTED);
+        return clientSocket;
+    }
+
+    public void closeServerSocket() throws IOException {
+        if (serverSocket != null) {
             serverSocket.close();
-            clientSocket.close();
-            System.out.println("Sockets closed");
+            System.out.println("Server socket closed");
         } else {
             serverSocket.close();
         }
     }
 
-    public Socket clientSocket() {
-        return clientSocket;
-    }
 }

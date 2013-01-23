@@ -1,21 +1,23 @@
 package com.rvc.server;
 
 import java.io.IOException;
+import java.net.Socket;
+import java.util.*;
 
-public class Server implements SocketReader.ReceiverCallback {
+public class Server implements ConnectionHandler.ConnectionCallbacks {
 
     private static final String UPDATE_SERVER_START = "Server starting";
 
-    private final ConnectionState connectionState;
-    private SocketHandler socketHandler;
+    private final ServerState serverState;
+    private final List<ConnectionHandler> readingThreads = new ArrayList<ConnectionHandler>();
 
-    private IOController ioController;
+    private SocketHandler socketHandler;
     private ServerCallbacks callback;
     private int port;
 
     public Server(ServerSettings serverSettings) {
         port = serverSettings.getPort();
-        connectionState = new ConnectionState();
+        serverState = new ServerState();
     }
 
     public void setCallback(ServerCallbacks callback) {
@@ -24,55 +26,70 @@ public class Server implements SocketReader.ReceiverCallback {
 
     public boolean startServer() throws IOException {
         updateStatus(UPDATE_SERVER_START);
-        initConnection();
-        callback.onClientConnected();
-        startSocketReadingThread();
-        closeConnection();
-        callback.onClientDisconnected();
+        handleConnections();
         return isServerToBeRestarted();
     }
 
-    private void startSocketReadingThread() {
-        new SocketReader(ioController, connectionState, this).start().join();
+    private void updateStatus(String status) {
+        callback.onStatusUpdate(status);
+    }
+
+    private void handleConnections() throws IOException {
+        initConnection();
+        serverState.setServerRunning(true);
+        clientConnectionLoop();
+        closeServerConnection();
     }
 
     private void initConnection() throws IOException {
-        initSockets();
-        initIO();
+        initServerSocket();
     }
 
-    private void initSockets() throws IOException {
-        socketHandler = new SocketHandler(callback, connectionState);
-        socketHandler.createSockets(port);
+    private void initServerSocket() throws IOException {
+        socketHandler = new SocketHandler(callback);
+        socketHandler.initServerSocket(port);
     }
 
-    private void initIO() throws IOException {
-        ioController = new IOHandler(socketHandler);
-        ioController.openIO();
-    }
-
-    @Override
-    public void onReceiveMessage(String message) {
-        if (isValidMessage(message)) {
-            sendMessage(message);
+    private void clientConnectionLoop() throws IOException {
+        while (serverState.isServerRunning()) {
+            Socket client = waitForNewClient();
+            startNewConnectionThread(client);
         }
     }
 
-    private boolean isValidMessage(String message) {
-        return message.substring(1, 2).equals("1");
+
+    private Socket waitForNewClient() throws IOException {
+        return socketHandler.waitForClient();
     }
 
-    private void sendMessage(String message) {
-        ioController.printWriter().println(message);
+    private void startNewConnectionThread(final Socket clientSocket) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    handleNewConnection(clientSocket);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
-    private void closeConnection() {
+    private void handleNewConnection(Socket clientSocket) throws IOException {
+        ConnectionHandler connectionHandler = new ConnectionHandler(this, serverState);
+        connectionHandler.handleNewConnection(clientSocket);
+    }
+
+    private void closeServerConnection() {
         try {
-            ioController.closeIO();
-            socketHandler.closeSockets();
+            socketHandler.closeServerSocket();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isServerToBeRestarted() {
+        return serverState.getServerQuit();
     }
 
     private void updateError(String error) {
@@ -81,28 +98,22 @@ public class Server implements SocketReader.ReceiverCallback {
     }
 
     public void quit() {
-        if (isOutputOpen()) {
-            sendDisconnectPacket();
-            closeConnection();
+        serverState.setServerRunning(false);
+        for (ConnectionHandler socketReader : readingThreads) {
+            socketReader.stop();
         }
-        connectionState.setServerQuit();
     }
 
-    private boolean isOutputOpen() {
-        return ioController != null;
+    @Override
+    public void clientThreadEstablished(ConnectionHandler connectionHandler) {
+        readingThreads.add(connectionHandler);
+        callback.onClientConnected();
     }
 
-    private void sendDisconnectPacket() {
-        sendMessage("1000");
-    }
-
-    private boolean isServerToBeRestarted() {
-        return !connectionState.getServerQuit();
-    }
-
-    private void updateStatus(String status) {
-        System.out.println(status);
-        callback.onStatusUpdate(status);
+    @Override
+    public void clientThreadFinished(ConnectionHandler connectionHandler) {
+        readingThreads.remove(connectionHandler);
+        callback.onClientDisconnected();
     }
 
 }

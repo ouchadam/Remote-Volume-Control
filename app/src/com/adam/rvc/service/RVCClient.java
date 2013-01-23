@@ -74,7 +74,9 @@ class RVCClient {
             @Override
             public void run() {
                 output.println(CHECK);
+                int i = 0;
                 do {
+                    Log.log("Read Loop : " + i++);
                     String message = readLineFromServer();
                     if (validMessage(message)) {
                         prevMessage = message;
