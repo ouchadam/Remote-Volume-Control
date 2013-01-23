@@ -10,8 +10,6 @@ public class Main implements ServerController {
 
     private static Main instance;
 
-    private final ServerController serverController = this;
-
     private Server server;
     private ServerSettings serverSettings;
     private ServerGui serverGui;
@@ -28,7 +26,7 @@ public class Main implements ServerController {
     }
 
     private void initGui() {
-        serverGui = new ServerGui(serverSettings, serverController);
+        serverGui = new ServerGui(serverSettings, Main.this);
     }
 
     private void initServer() {
@@ -53,7 +51,7 @@ public class Main implements ServerController {
         instance.startDiscovery();
         do {
             initServer();
-            serverGui.attachServer(server);
+            server.setGuiCallbacks(serverGui);
         } while (server.startServer());
     }
 
@@ -72,9 +70,9 @@ public class Main implements ServerController {
     }
 
     private void finish() {
+        server.quit();
         if (discovery != null && serverGui != null) {
             discovery.unregister();
-            serverGui.finish();
         }
         System.exit(0);
     }

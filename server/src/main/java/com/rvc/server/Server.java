@@ -20,7 +20,7 @@ public class Server implements ConnectionHandler.ConnectionCallbacks {
         serverState = new ServerState();
     }
 
-    public void setCallback(ServerCallbacks callback) {
+    public void setGuiCallbacks(ServerCallbacks callback) {
         this.callback = callback;
     }
 
@@ -56,7 +56,6 @@ public class Server implements ConnectionHandler.ConnectionCallbacks {
             startNewConnectionThread(client);
         }
     }
-
 
     private Socket waitForNewClient() throws IOException {
         return socketHandler.waitForClient();
