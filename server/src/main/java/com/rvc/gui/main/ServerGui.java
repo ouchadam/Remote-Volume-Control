@@ -1,5 +1,6 @@
 package com.rvc.gui.main;
 
+import com.rvc.Discovery;
 import com.rvc.ServerController;
 import com.rvc.gui.tray.TrayExitCallback;
 import com.rvc.server.ServerCallbacks;
@@ -7,7 +8,7 @@ import com.rvc.server.ServerSettings;
 
 import javax.swing.*;
 
-public class ServerGui implements ServerCallbacks, TrayExitCallback {
+public class ServerGui implements ServerCallbacks, TrayExitCallback, Discovery.DiscoveryCallback {
 
     private final GuiCreator guiCreator;
     private final ServerController serverController;
@@ -37,8 +38,8 @@ public class ServerGui implements ServerCallbacks, TrayExitCallback {
     }
 
     @Override
-    public void onErrorUpdate(String update) {
-        guiCreator.updateError(update);
+    public void onDiscoveryStatusUpdate(String update) {
+        guiCreator.updateDiscoveryStatus(update);
     }
 
     @Override
@@ -56,4 +57,8 @@ public class ServerGui implements ServerCallbacks, TrayExitCallback {
         serverExit();
     }
 
+    @Override
+    public void onDiscoveryReady() {
+        onDiscoveryStatusUpdate("Ready to be discovered");
+    }
 }

@@ -14,8 +14,10 @@ public class Discovery {
 
     private final JmDNS mdnsServer;
     private final ServerSettings settings;
+    private final DiscoveryCallback discoveryCallback;
 
-    public Discovery(ServerSettings serverSettings) throws IOException {
+    public Discovery(ServerSettings serverSettings, DiscoveryCallback discoveryCallback) throws IOException {
+        this.discoveryCallback = discoveryCallback;
         mdnsServer = JmDNS.create(serverSettings.getInternalInet());
         settings = serverSettings;
     }
@@ -39,13 +41,18 @@ public class Discovery {
     }
 
     private void registerService(ServiceInfo testService) throws IOException {
-        System.out.println("registering service");
         mdnsServer.registerService(testService);
-        System.out.println("registered");
+        discoveryCallback.onDiscoveryReady();
     }
 
     public void unregister() {
         mdnsServer.unregisterAllServices();
+    }
+
+    public interface DiscoveryCallback {
+
+        void onDiscoveryReady();
+
     }
 
 }

@@ -4,7 +4,7 @@ public interface ServerCallbacks {
 
     void onStatusUpdate(String update);
 
-    void onErrorUpdate(String update);
+    void onDiscoveryStatusUpdate(String update);
 
     void onClientConnected();
 

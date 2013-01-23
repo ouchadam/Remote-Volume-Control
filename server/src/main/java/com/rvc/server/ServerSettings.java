@@ -23,7 +23,7 @@ public class ServerSettings {
             return IPHelper.getExternalIp();
         } catch (IOException e) {
             e.printStackTrace();
-            return "Error fetching";
+            return "Error fetching external ip";
         }
     }
 

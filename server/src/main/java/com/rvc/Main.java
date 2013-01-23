@@ -29,10 +29,6 @@ public class Main implements ServerController {
         serverGui = new ServerGui(serverSettings, Main.this);
     }
 
-    private void initServer() {
-        server = new Server(serverSettings);
-    }
-
     @Override
     public void startServer() {
         new Thread(new Runnable() {
@@ -56,13 +52,22 @@ public class Main implements ServerController {
     }
 
     private void startDiscovery() {
-        try {
-            discovery = new Discovery(serverSettings);
-            discovery.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    discovery = new Discovery(serverSettings, serverGui);
+                    discovery.start();
+                } catch (IOException e) {
+                }
+            }
+        }).start();
     }
+
+    private void initServer() {
+        server = new Server(serverSettings);
+    }
+
 
     @Override
     public void stopServer() {

@@ -161,8 +161,8 @@ public class GuiCreator extends JFrame {
         labelManager.setStatusText(update);
     }
 
-    public void updateError(String update) {
-        labelManager.setErrorText(update);
+    public void updateDiscoveryStatus(String update) {
+        labelManager.discoveryStatus(update);
     }
 
 }

@@ -91,11 +91,6 @@ public class Server implements ConnectionHandler.ConnectionCallbacks {
         return serverState.getServerQuit();
     }
 
-    private void updateError(String error) {
-        System.out.println(error);
-        callback.onErrorUpdate(error);
-    }
-
     public void quit() {
         serverState.setServerRunning(false);
         for (ConnectionHandler socketReader : readingThreads) {

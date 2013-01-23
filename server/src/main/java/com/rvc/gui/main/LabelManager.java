@@ -13,7 +13,7 @@ public class LabelManager {
     private final JLabel macAddress;
     private final JLabel port;
     private final JLabel status;
-    private final JLabel error;
+    private final JLabel discoveryStatus;
 
     public LabelManager(ServerSettings serverSettings) {
         this.serverSettings = serverSettings;
@@ -23,7 +23,7 @@ public class LabelManager {
         macAddress = new JLabel();
         port = new JLabel();
         status = new JLabel("Initialising server...");
-        error = new JLabel();
+        discoveryStatus = new JLabel("Initialising discovery");
     }
 
     private String getOsNameLabel() {
@@ -37,7 +37,7 @@ public class LabelManager {
         panel.add(macAddress);
         panel.add(port);
         panel.add(status);
-        panel.add(error);
+        panel.add(discoveryStatus);
     }
 
     public void setStatusText(final String update) {
@@ -49,11 +49,11 @@ public class LabelManager {
         });
     }
 
-    public void setErrorText(final String update) {
+    public void discoveryStatus(final String update) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                error.setText(update);
+                discoveryStatus.setText(update);
             }
         });
     }

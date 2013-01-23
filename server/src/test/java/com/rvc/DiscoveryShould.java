@@ -13,7 +13,7 @@ public class DiscoveryShould {
     @Test
     public void use_provided_port_for_server() throws IOException {
         ServerSettings settings = mock(ServerSettings.class);
-        Discovery discovery = new Discovery(settings);
+        Discovery discovery = new Discovery(settings, null);
         discovery.createService();
 
         verify(settings).getPort();

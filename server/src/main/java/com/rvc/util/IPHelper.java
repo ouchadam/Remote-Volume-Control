@@ -32,7 +32,6 @@ public class IPHelper {
             Enumeration<InetAddress> a = e.getInetAddresses();
             while (a.hasMoreElements()) {
                 ip = a.nextElement();
-                System.out.println("Has ip : " + ip);
             }
         } catch (SocketException e) {
             e.printStackTrace();
