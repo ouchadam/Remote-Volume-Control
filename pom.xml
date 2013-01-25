@@ -31,6 +31,7 @@
   <modules>
     <module>app</module>
     <module>server</module>
+    <module>server-lib</module>
   </modules>
 
 </project>
