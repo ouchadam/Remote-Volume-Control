@@ -15,7 +15,6 @@ public class ServerSettings {
         this.internalAddress = internalAddress;
     }
 
-
     public String getInternalIp() {
         return internalAddress.getHostAddress();
     }
@@ -34,10 +33,6 @@ public class ServerSettings {
 
     public InetAddress getInternalInet() {
         return internalAddress;
-    }
-
-    public String getServiceType() {
-        return "rvc-service";
     }
 
 }

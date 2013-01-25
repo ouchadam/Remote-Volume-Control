@@ -1,7 +1,5 @@
 package com.server;
 
-import com.server.server.ServerSettings;
-
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 import java.io.IOException;
@@ -11,17 +9,17 @@ import java.net.UnknownHostException;
 public class Discovery {
 
     private final JmDNS mdnsServer;
-    private final ServerSettings settings;
+    private final DiscoverySettings settings;
     private final Callback callback;
 
     public interface Callback {
         void onDiscoveryUpdate(String update);
     }
 
-    public Discovery(ServerSettings serverSettings, Callback callback) throws IOException {
+    public Discovery(DiscoverySettings discoverySettings, Callback callback) throws IOException {
         this.callback = callback;
-        mdnsServer = JmDNS.create(serverSettings.getInternalInet());
-        settings = serverSettings;
+        mdnsServer = JmDNS.create(discoverySettings.getInternalAddress());
+        settings = discoverySettings;
     }
 
     public void start() throws IOException {

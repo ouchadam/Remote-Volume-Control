@@ -4,6 +4,6 @@ public interface ClientMessageCallback {
 
     void onMessageReceived(String clientName, String message);
 
-    String writeToClient();
+    String replyToClient();
 
 }

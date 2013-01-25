@@ -1,6 +1,7 @@
 package com.server.server;
 
 import com.server.Discovery;
+import com.server.DiscoverySettings;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -22,8 +23,12 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
     public Server(ServerSettings serverSettings) throws IOException {
         settings = serverSettings;
         readingThreads = new ArrayList<ConnectionHandler>();
-        discovery = new Discovery(settings, this);
+        discovery = new Discovery(createDiscoverySettings(serverSettings), this);
         serverState = new ServerState();
+    }
+
+    private DiscoverySettings createDiscoverySettings(ServerSettings serverSettings) {
+        return new DiscoverySettings(serverSettings, "rvc-service");
     }
 
     public void setConnectionCallback(ClientConnectionCallback callback) {
@@ -124,7 +129,7 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
     }
 
     private void printResponse() {
-        readingThreads.get(0).writeToClient(clientMessageCallback.writeToClient());
+        readingThreads.get(0).writeToClient(clientMessageCallback.replyToClient());
     }
 
     @Override

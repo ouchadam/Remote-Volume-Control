@@ -6,6 +6,7 @@ import com.server.server.Protocol;
 public class ServerMessageHandler implements ClientMessageCallback {
 
     private final Protocol protocol;
+
     private String reply;
 
     public ServerMessageHandler() {
@@ -18,7 +19,7 @@ public class ServerMessageHandler implements ClientMessageCallback {
     }
 
     @Override
-    public String writeToClient() {
+    public String replyToClient() {
         return reply;
     }
 
