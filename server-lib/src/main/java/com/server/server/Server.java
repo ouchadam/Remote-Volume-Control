@@ -12,7 +12,7 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
     private static final String UPDATE_SERVER_START = "Server starting";
 
     private final ServerState serverState;
-    private final List<ConnectionHandler> readingThreads;
+    private final Map<String, ConnectionHandler> readingThreads;
     private final Discovery discovery;
 
     private SocketHandler socketHandler;
@@ -22,7 +22,7 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
 
     public Server(ServerSettings serverSettings) throws IOException {
         settings = serverSettings;
-        readingThreads = new ArrayList<ConnectionHandler>();
+        readingThreads = new HashMap<String, ConnectionHandler>();
         discovery = new Discovery(createDiscoverySettings(serverSettings), this);
         serverState = new ServerState();
     }
@@ -105,14 +105,18 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
     public void quit() throws IOException {
         discovery.finish();
         serverState.setServerRunning(false);
-        for (ConnectionHandler connectionHandler : readingThreads) {
-            connectionHandler.stop();
+
+        Iterator it = readingThreads.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry)it.next();
+            ((ConnectionHandler) pairs.getValue()).stop();
+            it.remove();
         }
     }
 
     @Override
     public void clientThreadEstablished(ConnectionHandler connectionHandler) {
-        readingThreads.add(connectionHandler);
+        readingThreads.put(connectionHandler.getClientName(), connectionHandler);
         connectionCallback.onClientConnected(connectionHandler.getClientName());
     }
 
@@ -125,11 +129,11 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
     @Override
     public void clientMessageReceived(String clientName, String message) {
         clientMessageCallback.onMessageReceived(clientName, message);
-        printResponse();
+        printResponse(clientName);
     }
 
-    private void printResponse() {
-        readingThreads.get(0).writeToClient(clientMessageCallback.replyToClient());
+    private void printResponse(String clientName) {
+        readingThreads.get(clientName).writeToClient(clientMessageCallback.replyToClient());
     }
 
     @Override
