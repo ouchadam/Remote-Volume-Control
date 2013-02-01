@@ -22,9 +22,20 @@ public class Discovery {
         settings = discoverySettings;
     }
 
-    public void start() throws IOException {
-        ServiceInfo testService = createService();
-        registerService(testService);
+    public void start(final Failed failureCallback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ServiceInfo testService = createService();
+                try {
+                    registerService(testService);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    failureCallback.onDiscoveryFailed();
+                }
+            }
+        }).start();
+
     }
 
     ServiceInfo createService() {
@@ -47,6 +58,10 @@ public class Discovery {
 
     public void finish() {
         mdnsServer.unregisterAllServices();
+    }
+
+    public interface Failed {
+        void onDiscoveryFailed();
     }
 
 }

@@ -44,9 +44,14 @@ public class NetworkHelper {
         return ip;
     }
 
-    public String getExternalIp() throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(createExternalURL().openStream()));
-        return in.readLine();
+    public String getExternalIp() {
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(createExternalURL().openStream()));
+            return in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "failed to retreive external ip";
     }
 
     private static URL createExternalURL() {

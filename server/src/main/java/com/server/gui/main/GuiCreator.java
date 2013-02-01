@@ -6,7 +6,6 @@ import com.server.gui.tray.TrayExit;
 import com.server.gui.tray.TrayExitCallback;
 import com.server.server.ServerSettings;
 import com.server.util.NetworkHelper;
-import com.server.util.SettingsHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +27,6 @@ public class GuiCreator extends JFrame {
     private TrayIcon trayIcon;
     private JPanel panel;
     private JComboBox comboBox;
-    private ServerSettings serverSettings;
 
     public GuiCreator(TrayExitCallback trayExitCallback, ServerController serverController) {
         this.trayExitCallback = trayExitCallback;
@@ -120,15 +118,19 @@ public class GuiCreator extends JFrame {
     private JPanel createMainPanel() {
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        serverSettings = SettingsHelper.getServerSettings(getComboItem());
-        labelManager = new LabelManager(serverSettings);
-        labelManager.update();
-        labelManager.addAllLabels(panel);
+        updateLabels();
         return panel;
     }
 
+    private void updateLabels() {
+        NetworkHelper networkHelper = new NetworkHelper(getComboItem());
+        labelManager = new LabelManager(networkHelper);
+        labelManager.update();
+        labelManager.addAllLabels(panel);
+    }
+
     private String getComboItem() {
-        return (String)comboBox.getItemAt(comboBox.getSelectedIndex());
+        return (String) comboBox.getItemAt(comboBox.getSelectedIndex());
     }
 
     private JComboBox createComboBox() {
@@ -179,7 +181,7 @@ public class GuiCreator extends JFrame {
     }
 
     public ServerSettings getServerSettings() {
-        return serverSettings;
+        return labelManager.getServerSettings();
     }
 
 }

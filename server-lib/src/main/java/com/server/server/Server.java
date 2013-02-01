@@ -22,8 +22,8 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
 
     public Server(ServerSettings serverSettings) throws IOException {
         settings = serverSettings;
+        discovery = new Discovery(createDiscoverySettings(settings), this);
         readingThreads = new HashMap<String, ConnectionHandler>();
-        discovery = new Discovery(createDiscoverySettings(serverSettings), this);
         serverState = new ServerState();
     }
 
@@ -41,8 +41,17 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
 
     public void startServer() throws IOException {
         updateStatus(UPDATE_SERVER_START);
-        discovery.start();
+        startDiscovery();
         handleConnections();
+    }
+
+    private void startDiscovery() throws IOException {
+        discovery.start(new Discovery.Failed() {
+            @Override
+            public void onDiscoveryFailed() {
+                //Todo
+            }
+        });
     }
 
     private void updateStatus(String status) {

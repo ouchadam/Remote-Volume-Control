@@ -1,6 +1,8 @@
 package com.server.gui.main;
 
 import com.server.server.ServerSettings;
+import com.server.util.NetworkHelper;
+import com.server.util.SettingsHelper;
 
 import javax.swing.*;
 
@@ -13,11 +15,13 @@ public class LabelManager {
     private final JLabel port;
     private final JLabel status;
     private final JLabel discoveryStatus;
+    private final SettingsHelper settingsHelper;
 
-    private final ServerSettings serverSettings;
+    private ServerSettings serverSettings;
 
-    public LabelManager(ServerSettings serverSettings) {
-        this.serverSettings = serverSettings;
+    public LabelManager(NetworkHelper networkHelper) {
+        settingsHelper = new SettingsHelper(networkHelper);
+
         osName = new JLabel(getOsNameLabel());
         internalIp = new JLabel();
         externalIp = new JLabel();
@@ -60,6 +64,7 @@ public class LabelManager {
     }
 
     public void update() {
+        serverSettings = settingsHelper.getServerSettings();
         internalIp.setText(getInternalLabel());
         externalIp.setText(getExternalLabel());
         macAddress.setText(getMacAddressLabel());
@@ -82,4 +87,7 @@ public class LabelManager {
         return "Port : " + serverSettings.getPort();
     }
 
+    public ServerSettings getServerSettings() {
+        return serverSettings;
+    }
 }
