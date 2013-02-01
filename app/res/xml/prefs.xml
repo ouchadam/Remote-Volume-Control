@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/prefs_category"
+        android:key="prefs">
+
+        <CheckBoxPreference
+            android:key="server"
+            android:title="Show server details"
+            android:summary="Displays ip, name etc"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="show_message"
+            android:title="Show message content"
+            android:summary="Display raw received message content"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

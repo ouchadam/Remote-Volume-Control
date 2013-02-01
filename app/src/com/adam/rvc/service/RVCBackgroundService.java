@@ -125,7 +125,6 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
 
     @Override
     public void onMessageReceived(String message) {
-        statusUpdater.updateStatusAndLog("Message : " + message);
         broadcastServerMessage(message);
     }
 

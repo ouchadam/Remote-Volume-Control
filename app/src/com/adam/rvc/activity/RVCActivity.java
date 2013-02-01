@@ -2,7 +2,6 @@ package com.adam.rvc.activity;
 
 import android.os.Bundle;
 import android.view.Window;
-import android.view.WindowManager;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -16,7 +15,6 @@ public abstract class RVCActivity extends SherlockFragmentActivity {
     }
 
     private void initWindow() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
     }
 

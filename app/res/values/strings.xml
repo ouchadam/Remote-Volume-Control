@@ -15,6 +15,7 @@
     <string name="connection_failed">Connection failed</string>
     <string name="creating_service">Creating RVC service</string>
     <string name="destroying_service">Destroying RVC service</string>
+    <string name="prefs_category">Settings</string>
 
 
 </resources>
