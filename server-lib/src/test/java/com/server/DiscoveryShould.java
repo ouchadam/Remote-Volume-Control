@@ -1,6 +1,5 @@
 package com.server;
 
-import com.server.server.ServerSettings;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,7 +11,7 @@ public class DiscoveryShould {
 
     @Test
     public void use_provided_port_for_server() throws IOException {
-        ServerSettings settings = mock(ServerSettings.class);
+        DiscoverySettings settings = mock(DiscoverySettings.class);
         Discovery discovery = new Discovery(settings, null);
         discovery.createService();
 

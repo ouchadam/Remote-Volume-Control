@@ -63,14 +63,11 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
                 connect(ipAddress, port);
             }
         }).start();
-
     }
 
     private void connect(String ipAddress, int port) {
         try {
-            if (connection == null) {
-                connection = new RVCConnection(ipAddress, port, onMessageReceived, statusUpdater);
-            }
+            lazyInitConnection(ipAddress, port);
             connection.connect();
         } catch (IOException e) {
             connection = null;
@@ -79,6 +76,12 @@ public class RVCBackgroundService extends Service implements OnMessageReceived {
             if (retries < MAX_RETRIES) {
                 retryConnection(ipAddress, port);
             }
+        }
+    }
+
+    private void lazyInitConnection(String ipAddress, int port) throws IOException {
+        if (connection == null) {
+            connection = new RVCConnection(ipAddress, port, onMessageReceived, statusUpdater);
         }
     }
 
