@@ -10,6 +10,7 @@ import java.util.*;
 public class Server implements ConnectionHandler.Callback, Discovery.Callback {
 
     private static final String UPDATE_SERVER_START = "Server starting";
+    private static final String RVC_SERVICE = "rvc-service";
 
     private final ServerState serverState;
     private final Map<String, ConnectionHandler> readingThreads;
@@ -28,7 +29,7 @@ public class Server implements ConnectionHandler.Callback, Discovery.Callback {
     }
 
     private DiscoverySettings createDiscoverySettings(ServerSettings serverSettings) {
-        return new DiscoverySettings(serverSettings, "rvc-service");
+        return new DiscoverySettings(serverSettings, RVC_SERVICE);
     }
 
     public void setConnectionCallback(ClientConnectionCallback callback) {
