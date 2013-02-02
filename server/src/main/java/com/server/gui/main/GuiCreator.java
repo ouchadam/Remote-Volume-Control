@@ -37,6 +37,9 @@ public class GuiCreator extends JFrame {
         initFrame();
         initTray();
         initGuiExitAction();
+        if (comboBox.getItemCount() == 1) {
+            startServer();
+        }
     }
 
     private void initFrame() {
@@ -95,17 +98,17 @@ public class GuiCreator extends JFrame {
     ActionListener buttonAction = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            try {
-                startServer();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            startServer();
         }
     };
 
-    private void startServer() throws IOException {
+    private void startServer() {
         showServerSettings();
-        serverController.startServer();
+        try {
+            serverController.startServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showServerSettings() {
