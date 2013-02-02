@@ -16,10 +16,12 @@ public class LabelManager {
     private final JLabel status;
     private final JLabel discoveryStatus;
     private final SettingsHelper settingsHelper;
+    private final NetworkHelper networkHelper;
 
     private ServerSettings serverSettings;
 
     public LabelManager(NetworkHelper networkHelper) {
+        this.networkHelper = networkHelper;
         settingsHelper = new SettingsHelper(networkHelper);
 
         osName = new JLabel(getOsNameLabel());
@@ -66,9 +68,19 @@ public class LabelManager {
     public void update() {
         serverSettings = settingsHelper.getServerSettings();
         internalIp.setText(getInternalLabel());
-        externalIp.setText(getExternalLabel());
+        updateExternalIp();
         macAddress.setText(getMacAddressLabel());
         port.setText(getPortLabel());
+    }
+
+    private void updateExternalIp() {
+        externalIp.setText("Fetching External IP...");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                externalIp.setText(getExternalLabel());
+            }
+        }).start();
     }
 
     private String getInternalLabel() {
@@ -76,7 +88,7 @@ public class LabelManager {
     }
 
     private String getExternalLabel() {
-        return "External Address : " + serverSettings.getExternalIp();
+        return "External Address : " + networkHelper.getExternalIp();
     }
 
     private String getMacAddressLabel() {
@@ -90,4 +102,5 @@ public class LabelManager {
     public ServerSettings getServerSettings() {
         return serverSettings;
     }
+
 }

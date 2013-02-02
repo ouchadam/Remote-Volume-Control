@@ -15,7 +15,7 @@ public class SettingsHelper {
     public ServerSettings getServerSettings() {
         InetAddress localIp = networkHelper.getLocalIp();
         String macAddress = networkHelper.getMacAddress(localIp.getHostName());
-        return new ServerSettings(macAddress, networkHelper.getExternalIp(), localIp);
+        return new ServerSettings(macAddress, localIp);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.server;
+package com.server.discovery;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;

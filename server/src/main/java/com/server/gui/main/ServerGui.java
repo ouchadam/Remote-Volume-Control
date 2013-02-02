@@ -1,6 +1,6 @@
 package com.server.gui.main;
 
-import com.server.Discovery;
+import com.server.discovery.Discovery;
 import com.server.ServerController;
 import com.server.gui.tray.TrayExitCallback;
 import com.server.server.ClientConnectionCallback;

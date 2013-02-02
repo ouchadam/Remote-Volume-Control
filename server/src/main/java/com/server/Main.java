@@ -27,7 +27,7 @@ public class Main implements ServerController {
             @Override
             public void run() {
                 try {
-                    initServer();
+                    server = createServer();
                     server.startServer();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -36,10 +36,11 @@ public class Main implements ServerController {
         }).start();
     }
 
-    private void initServer() throws IOException {
-        server = new Server(serverGui.getServerSettings());
+    private Server createServer() throws IOException {
+        Server server = new Server(serverGui.getServerSettings());
         server.setConnectionCallback(serverGui);
         server.setMessageCallback(new ServerMessageHandler());
+        return server;
     }
 
     @Override

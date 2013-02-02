@@ -1,4 +1,4 @@
-package com.server;
+package com.server.discovery;
 
 import com.server.server.ServerSettings;
 

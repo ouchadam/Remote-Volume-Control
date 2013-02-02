@@ -21,7 +21,7 @@ public class NetworkHelper {
         return new OSHelper().isLinux() ? getLinuxLocalIp() : getDefaultLocalHost();
     }
 
-    private static InetAddress getDefaultLocalHost() {
+    private InetAddress getDefaultLocalHost() {
         try {
             return InetAddress.getLocalHost();
         } catch (UnknownHostException e) {

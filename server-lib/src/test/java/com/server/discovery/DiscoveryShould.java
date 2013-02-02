@@ -1,5 +1,7 @@
-package com.server;
+package com.server.discovery;
 
+import com.server.discovery.Discovery;
+import com.server.discovery.DiscoverySettings;
 import org.junit.Test;
 
 import java.io.IOException;

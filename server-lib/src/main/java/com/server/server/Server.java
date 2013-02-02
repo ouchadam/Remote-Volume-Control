@@ -1,7 +1,7 @@
 package com.server.server;
 
-import com.server.Discovery;
-import com.server.DiscoverySettings;
+import com.server.discovery.Discovery;
+import com.server.discovery.DiscoverySettings;
 
 import java.io.IOException;
 import java.net.Socket;
