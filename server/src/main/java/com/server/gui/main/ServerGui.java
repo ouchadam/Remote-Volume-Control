@@ -40,7 +40,7 @@ public class ServerGui implements ClientConnectionCallback, TrayExitCallback, Di
 
     @Override
     public void onDiscoveryStatusUpdate(String update) {
-        guiCreator.updateDiscoveryStatus(update);
+        guiCreator.updateStatus(update);
     }
 
     @Override

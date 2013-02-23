@@ -8,7 +8,7 @@ import com.adam.rvc.service.RVCServiceFactory;
 import com.adam.rvc.util.MessageHandler;
 import com.adam.rvc.util.SharedPrefsHelper;
 
-public class MainActivity extends RVCActivity  {
+public class MainActivity extends AbstractRVCActivity {
 
     private final ServerMessageReceiver messageReceiver;
 

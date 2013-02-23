@@ -5,7 +5,7 @@ import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public abstract class RVCActivity extends SherlockFragmentActivity {
+abstract class AbstractRVCActivity extends SherlockFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
